@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -20,7 +22,7 @@ public class User {
     private long idx;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(unique = true)
     private String userEmail;
 
     @NotBlank
@@ -41,5 +43,9 @@ public class User {
 
     @Column(nullable = true)
     private int loginCnt;
+
+    @Column(nullable = false, length = 1)
+    @NotBlank
+    private String userYn;
 
 }

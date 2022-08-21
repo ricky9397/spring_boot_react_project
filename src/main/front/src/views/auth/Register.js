@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
 
 
 // export default function Register() {
@@ -10,11 +9,63 @@ const Register = () => {
   const [userPassword, setUserPassword] = useState('');
   const [userName, setUserName] = useState('');
   const [userPhone, setUserPhone] = useState('');
+  const [userYn, setUserCheck] = useState('');
 
-  const onEmailHandler = (e) => { setUserEmail(e.currentTarget.value); };
-  const onPwHandler = (e) => { setUserPassword(e.currentTarget.value); };
+  const [disabled, setDisabled] = useState(false);
+  const [error, setError] = useState(false);
+  const replaceRegExp = /\s/g; 
+
+  const onEmailHandler = (e) => { 
+    // 이메일 정규식
+    const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+    // 공백 제거 
+    setUserEmail(e.currentTarget.value.replace(replaceRegExp, ''));
+    if(!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value == ""){
+      setError(true); // disabled 처리하기 위한 error 로직
+    } else {
+      setError(false);
+    }
+  };
+
+  const onPwHandler = (e) => { 
+    // 비밀번호 정규식
+    const passwordRegEx = /^[A-Za-z0-9]{6,12}$/;
+    setUserPassword(e.currentTarget.value.replace(replaceRegExp, ''));
+    if(!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value == ""){
+      setError(true);
+    } else {
+      setError(false);
+    }
+  };
+
   const onNameHanlder = (e) => { setUserName(e.currentTarget.value); };
-  const onPhoneHandler = (e) => { setUserPhone(e.currentTarget.value); };
+  const onPhoneHandler = (e) => { 
+    // 전화번호 정규식
+    const phoneRegExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
+    setUserPhone(e.currentTarget.value); 
+    if(!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value == ""){
+      setError(true);
+    } else {
+      setError(false);
+    }
+  };
+  // 체크박스
+  const onCheckHanlder = (checked) => {
+    if(checked){
+      setError(false);
+      setUserCheck('Y');
+    } else {
+      setError(true);
+      setUserCheck('');
+    }
+  }
+
+  // 회원가입 버튼 활성화 / 비활성화
+  useEffect(() => {
+    setDisabled(!(userEmail && userName && userPhone && userYn && !error));
+  }, [userEmail,  userPassword, userPhone, userYn]);
+
+
 
   const submit = async (e) => {
     e.preventDefault();
@@ -23,17 +74,17 @@ const Register = () => {
         userEmail,
         userPassword,
         userName,
-        userPhone
+        userPhone,
+        userYn
       }).then(res => {
         if(res.status == '200'){
             alert("어서오세요 회원가입 되셨습니다.");
-        } else {
-            alert("회원가입 실패 하셨습니다. 관리자에게 문의하세요.");
-        }
+        } 
       });
     } catch(e) {
       // 서버에서 받은 에러 메시지 출력
       console.log(e.response.data.message);
+      alert("관리자에게 문의하세요.");
     }
   }
 
@@ -90,7 +141,7 @@ const Register = () => {
                     <input
                       type="email"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email" value={userEmail} onChange={onEmailHandler}
+                      placeholder="Email" value={userEmail} onChange={onEmailHandler} 
                     />
                   </div>
 
@@ -142,6 +193,7 @@ const Register = () => {
                         id="customCheckLogin"
                         type="checkbox"
                         className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
+                        onChange={e => {onCheckHanlder(e.target.checked);}}
                       />
                       <span className="ml-2 text-sm font-semibold text-blueGray-600">
                         개인정보 보호정책에{" "}
@@ -159,7 +211,7 @@ const Register = () => {
                   <div className="text-center mt-6">
                     <button
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                      type="submit"
+                      disabled={disabled} type="submit" 
                     >
                       회원가입
                     </button>
