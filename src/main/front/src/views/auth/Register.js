@@ -1,6 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { Redirect } from "react-router-dom";
 
-export default function Register() {
+
+// export default function Register() {
+const Register = () => {
+
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userPhone, setUserPhone] = useState('');
+
+  const onEmailHandler = (e) => { setUserEmail(e.currentTarget.value); };
+  const onPwHandler = (e) => { setUserPassword(e.currentTarget.value); };
+  const onNameHanlder = (e) => { setUserName(e.currentTarget.value); };
+  const onPhoneHandler = (e) => { setUserPhone(e.currentTarget.value); };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:8080/auth/register",{
+        userEmail,
+        userPassword,
+        userName,
+        userPhone
+      }).then(res => {
+        if(res.status == '200'){
+            alert("어서오세요 회원가입 되셨습니다.");
+        } else {
+            alert("회원가입 실패 하셨습니다. 관리자에게 문의하세요.");
+        }
+      });
+    } catch(e) {
+      // 서버에서 받은 에러 메시지 출력
+      console.log(e.response.data.message);
+    }
+  }
+
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -10,7 +46,7 @@ export default function Register() {
               <div className="rounded-t mb-0 px-6 py-6">
                 <div className="text-center mb-3">
                   <h6 className="text-blueGray-500 text-sm font-bold">
-                    Sign up with
+                    간편 회원가입
                   </h6>
                 </div>
                 <div className="btn-wrapper text-center">
@@ -41,20 +77,20 @@ export default function Register() {
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                 <div className="text-blueGray-400 text-center mb-3 font-bold">
-                  <small>Or sign up with credentials</small>
+                  <small>회원가입</small>
                 </div>
-                <form>
+                <form onSubmit={submit}>
                   <div className="relative w-full mb-3">
                     <label
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Name
+                      이메일
                     </label>
                     <input
                       type="email"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Name"
+                      placeholder="Email" value={userEmail} onChange={onEmailHandler}
                     />
                   </div>
 
@@ -63,26 +99,40 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email"
-                    />
-                  </div>
-
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Password
+                      비밀번호
                     </label>
                     <input
                       type="password"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Password"
+                      placeholder="Password" value={userPassword} onChange={onPwHandler}
+                    />
+                  </div>
+
+                  <div className="relative w-full mb-3">
+                    <label
+                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                      htmlFor="grid-password"
+                    >
+                      이름
+                    </label>
+                    <input
+                      type="text"
+                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      placeholder="Name" value={userName} onChange={onNameHanlder}
+                    />
+                  </div>
+
+                  <div className="relative w-full mb-3">
+                    <label
+                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                      htmlFor="grid-password"
+                    >
+                      전화번호
+                    </label>
+                    <input
+                      type="text"
+                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      placeholder="Phone" value={userPhone} onChange={onPhoneHandler}
                     />
                   </div>
 
@@ -94,13 +144,13 @@ export default function Register() {
                         className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
                       />
                       <span className="ml-2 text-sm font-semibold text-blueGray-600">
-                        I agree with the{" "}
+                        개인정보 보호정책에{" "}
                         <a
                           href="#pablo"
                           className="text-lightBlue-500"
                           onClick={(e) => e.preventDefault()}
                         >
-                          Privacy Policy
+                          동의합니까?
                         </a>
                       </span>
                     </label>
@@ -109,9 +159,9 @@ export default function Register() {
                   <div className="text-center mt-6">
                     <button
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                      type="button"
+                      type="submit"
                     >
-                      Create Account
+                      회원가입
                     </button>
                   </div>
                 </form>
@@ -123,3 +173,5 @@ export default function Register() {
     </>
   );
 }
+
+export default Register
