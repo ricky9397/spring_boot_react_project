@@ -22,7 +22,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) throws Exception{
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-        user.setRole("ROLE_USER");
+//        user.setRole("ROLE_USER");
         Long result = userService.register(user);
         if(result == 0){
             return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
