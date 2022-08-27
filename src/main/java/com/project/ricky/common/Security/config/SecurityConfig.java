@@ -45,31 +45,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeRequests()
-                .antMatchers("/user/**").authenticated() // 인증만 되면 들어갈 수 있는 주소
-                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                .and()
-                .formLogin()
-                .usernameParameter("userEmail")
-                .loginProcessingUrl("/auth/login") // /login 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행해 준다.
-                .defaultSuccessUrl("/");
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
         final SpLoginFilter filter = new SpLoginFilter(
                 authenticationManagerBean(),
                 rememberMeServices()
         );
         http
-                .csrf().disable()
+                .csrf().disable()   // csrf 비활성화
                 .formLogin(login -> {
-                    login.loginPage("/login")
+                    login.loginPage("/auth/login")  // 로그인페이지
                     ;
                 })
                 .logout(logout -> {
-                    logout.logoutSuccessUrl("/")
+                    logout.logoutSuccessUrl("/")    // 로그아웃 후 메인페이지이동
                     ;
                 })
                 .rememberMe(config -> {
@@ -83,10 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(config -> {
                     config
                             .antMatchers("/").permitAll()
-                            .antMatchers("/login").permitAll()
-                            .antMatchers("/error").permitAll()
-                            .antMatchers("/signup/*").permitAll()
-                            .antMatchers("/study/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_STUDENT")
+                            .antMatchers("/auth/login").permitAll()
+//                            .antMatchers("/error").permitAll()
+                            .antMatchers("/auth/signup/*").permitAll()
+                            .antMatchers("/study/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                             .antMatchers("/teacher/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
                             .antMatchers("/manager/**").hasAuthority("ROLE_ADMIN")
                     ;

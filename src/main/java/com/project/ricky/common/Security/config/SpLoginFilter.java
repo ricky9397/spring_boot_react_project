@@ -22,9 +22,9 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
     public SpLoginFilter(
             AuthenticationManager authenticationManager,
             RememberMeServices rememberMeServices
-    ){
+    ) {
         this.authenticationManager = authenticationManager;
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login","POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
         this.setAuthenticationSuccessHandler(new LoginSuccessHandler());
         this.setAuthenticationFailureHandler(new LoginFailureHandler());
         this.setRememberMeServices(rememberMeServices);
@@ -50,8 +50,7 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain,
-            Authentication authResult) throws IOException, ServletException
-    {
+            Authentication authResult) throws IOException, ServletException {
         super.successfulAuthentication(request, response, chain, authResult);
     }
 
@@ -59,8 +58,7 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(
             HttpServletRequest request,
             HttpServletResponse response,
-            AuthenticationException failed) throws IOException, ServletException
-    {
+            AuthenticationException failed) throws IOException, ServletException {
         super.unsuccessfulAuthentication(request, response, failed);
     }
 

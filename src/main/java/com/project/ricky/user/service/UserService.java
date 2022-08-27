@@ -10,13 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
-
     private final UserRepository userRepository;
-
-    public Long register(User user){
+    public Long register(User user) throws Exception{
         return userRepository.save(user).getIdx();
     }
 
-
-
+    public int login(User user) throws Exception {
+        return 0;
+    }
 }

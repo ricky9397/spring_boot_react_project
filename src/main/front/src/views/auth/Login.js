@@ -1,7 +1,32 @@
-import React from "react";
+import axios from "axios";
+import React,{useState} from "react";
 import { Link } from "react-router-dom";
 
-export default function Login() {
+const Login = () => {
+
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+
+
+
+  const submit = async(e) =>{
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:8080/auth/login",{
+        userEmail,
+        userPassword
+      }).then(res => {
+        if(res.status == 200){
+          console.log("성공");
+        }
+      });
+      
+    } catch (e) {
+      console.log(e.response.data.message);
+    }
+  }
+
+
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -118,3 +143,5 @@ export default function Login() {
     </>
   );
 }
+
+export default Login
