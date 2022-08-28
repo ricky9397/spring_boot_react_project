@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -14,6 +16,7 @@ import java.util.Set;
 @Data
 @Entity
 @Builder
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_USER")
@@ -21,7 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idx;
+    private Long userId;
 
     @NotBlank
     @Column(unique = true)
@@ -43,8 +46,8 @@ public class User implements UserDetails {
     @JoinColumn(foreignKey = @ForeignKey(name = "userId"))
     private Set<Authority> authorities;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private User admin;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private User admin;
 
     @Column(nullable = true)
     private int loginCnt;
@@ -53,8 +56,9 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 1)
     private String userYn;
 
-    @Column(nullable = false, length = 1)
-    private String lockedYn;
+//    @Column(nullable = false, length = 1)
+//    @ColumnDefault("N")
+//    private String lockedYn;
 
     @Column(nullable = true)
     private String userNickName;
@@ -73,6 +77,7 @@ public class User implements UserDetails {
     // pk값
     @Override
     public String getUsername() {
+        System.out.println("유저메일11111111111========= " + userEmail);
         return userEmail;
     }
 

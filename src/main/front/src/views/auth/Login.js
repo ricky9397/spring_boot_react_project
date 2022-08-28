@@ -8,11 +8,19 @@ const Login = () => {
   const [userPassword, setUserPassword] = useState('');
 
 
+  const onEmailHandler = (e) => {
+    setUserEmail(e.currentTarget.value);
+  }
+
+  const onPwHandler = (e) => {
+    setUserPassword(e.currentTarget.value);
+  }
+
 
   const submit = async(e) =>{
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/auth/login",{
+      await axios.post("http://localhost:8080/auth/logins",{
         userEmail,
         userPassword
       }).then(res => {
@@ -22,7 +30,7 @@ const Login = () => {
       });
       
     } catch (e) {
-      console.log(e.response.data.message);
+      // console.log(e.response.data.message);
     }
   }
 
@@ -69,7 +77,7 @@ const Login = () => {
                 <div className="text-blueGray-400 text-center mb-3 font-bold">
                   <small>Or sign in with credentials</small>
                 </div>
-                <form>
+                <form onSubmit={submit}>
                   <div className="relative w-full mb-3">
                     <label
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -80,7 +88,7 @@ const Login = () => {
                     <input
                       type="email"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email"
+                      placeholder="Email" value={userEmail} onChange={onEmailHandler}
                     />
                   </div>
 
@@ -94,7 +102,7 @@ const Login = () => {
                     <input
                       type="password"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Password"
+                      placeholder="Password" value={userPassword} onChange={onPwHandler}
                     />
                   </div>
                   <div>
@@ -113,7 +121,7 @@ const Login = () => {
                   <div className="text-center mt-6">
                     <button
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                      type="button"
+                      type="submit"
                     >
                       로그인
                     </button>

@@ -30,13 +30,13 @@ public class UserController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/logins")
     public ResponseEntity<?> login(@RequestBody User user) throws Exception {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-
+        System.out.println("user =============== " + user);
         int result = userService.login(user);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

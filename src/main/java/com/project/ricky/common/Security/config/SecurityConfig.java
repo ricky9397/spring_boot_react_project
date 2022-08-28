@@ -4,6 +4,7 @@ import com.project.ricky.user.service.UserSecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -29,10 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         auth.userDetailsService(userSecurityService).passwordEncoder(encoderPwd());
     }
 
+    // 시큐리티에서 제공하는 cookie 에 Remember Me 기능
     private RememberMeServices rememberMeServices() {
+        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
         TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(
                 "paper-site-remember-me",
                 userSecurityService
@@ -45,10 +55,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        System.out.println("ccccccccccccccccccccccccccccccccccccccccccccc");
         final SpLoginFilter filter = new SpLoginFilter(
                 authenticationManagerBean(),
                 rememberMeServices()
         );
+        System.out.println("ddddddddddddddddddddddddddddddddddddddddddd");
         http
                 .csrf().disable()   // csrf 비활성화
                 .formLogin(login -> {
@@ -77,12 +89,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/teacher/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
                             .antMatchers("/manager/**").hasAuthority("ROLE_ADMIN")
                     ;
-                })
+                }).cors();
         ;
     }
 
+    
+    // 시큐리티 cors 맵핑 메서드
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+
     @Override
     public void configure(WebSecurity web) throws Exception {
+        System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }

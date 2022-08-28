@@ -26,7 +26,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-
+        System.out.println("3333333333333333333333333333333333333333333333333333333333");
         handle(request, response, requestCache.getRequest(request, response), authentication);
         clearAuthenticationAttributes(request);
     }
@@ -57,7 +57,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     protected String determineTargetUrl(final HttpServletRequest request, SavedRequest savedRequest, final Authentication authentication) {
         if (savedRequest != null) {
             String redirectUrl = savedRequest.getRedirectUrl();
-            if (redirectUrl != null && !redirectUrl.startsWith("/login")) {
+            if (redirectUrl != null && !redirectUrl.startsWith("/auth/login")) {
                 return savedRequest.getRedirectUrl();
             }
         }

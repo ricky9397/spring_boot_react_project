@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     public Long register(User user) throws Exception{
-        return userRepository.save(user).getIdx();
+        return userRepository.save(user).getUserId();
     }
 
     public int login(User user) throws Exception {
