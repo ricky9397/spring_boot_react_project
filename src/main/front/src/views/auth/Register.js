@@ -20,7 +20,7 @@ const Register = () => {
     const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
     // 공백 제거 
     setUserEmail(e.currentTarget.value.replace(replaceRegExp, ''));
-    if(!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value == ""){
+    if(!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value === ""){
       setError(true); // disabled 처리하기 위한 error 로직
     } else {
       setError(false);
@@ -31,7 +31,7 @@ const Register = () => {
     // 비밀번호 정규식
     const passwordRegEx = /^[A-Za-z0-9]{6,12}$/;
     setUserPassword(e.currentTarget.value.replace(replaceRegExp, ''));
-    if(!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value == ""){
+    if(!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value === ""){
       setError(true);
     } else {
       setError(false);
@@ -43,14 +43,14 @@ const Register = () => {
     // 전화번호 정규식
     const phoneRegExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
     setUserPhone(e.currentTarget.value); 
-    if(!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value == ""){
+    if(!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value === ""){
       setError(true);
     } else {
       setError(false);
     }
   };
   // 체크박스
-  const onCheckHanlder = (checked) => {
+  const onCheckHandler = (checked) => {
     if(checked){
       setError(false);
       setUserCheck('Y');
@@ -78,7 +78,7 @@ const Register = () => {
         userYn
       }).then(res => {
         if(res.status == '200'){
-            alert("어서오세요 회원가입 되셨습니다.");
+            
         } 
       });
     } catch(e) {
@@ -193,7 +193,7 @@ const Register = () => {
                         id="customCheckLogin"
                         type="checkbox"
                         className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
-                        onChange={e => {onCheckHanlder(e.target.checked);}}
+                        onChange={e => {onCheckHandler(e.target.checked);}}
                       />
                       <span className="ml-2 text-sm font-semibold text-blueGray-600">
                         개인정보 보호정책에{" "}
