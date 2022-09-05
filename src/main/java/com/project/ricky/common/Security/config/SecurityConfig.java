@@ -1,32 +1,30 @@
 package com.project.ricky.common.Security.config;
 
+import com.project.ricky.common.config.CorsConfig;
+import com.project.ricky.common.jwt.JwtAuthenticationFilter;
 import com.project.ricky.user.service.UserSecurityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor
+@Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // secured 어노테이션 활성화, preAuthorize 어노테이션 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserSecurityService userSecurityService;
+
+    private final CorsConfig corsConfig;
 
     @Bean // bean 은 해당 메서드의 리턴되는 오브젝트를 Ioc 로 등록해준다.
     public BCryptPasswordEncoder encoderPwd() {
@@ -35,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         auth.userDetailsService(userSecurityService).passwordEncoder(encoderPwd());
     }
 
@@ -62,59 +59,57 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         );
         System.out.println("ddddddddddddddddddddddddddddddddddddddddddd");
         http
-                .csrf().disable()   // csrf 비활성화
-                .formLogin(login -> {
-                    login.loginPage("/auth/login")  // 로그인페이지
-                    ;
-                })
-                .logout(logout -> {
-                    logout.logoutSuccessUrl("/")    // 로그아웃 후 메인페이지이동
-                    ;
-                })
-                .rememberMe(config -> {
-                    config.rememberMeServices(rememberMeServices())
-                    ;
-                })
-                .addFilterAt(filter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> {
-                    exception.accessDeniedPage("/access-denied");
-                })
-                .authorizeRequests(config -> {
-                    config
-                            .antMatchers("/").permitAll()
-                            .antMatchers("/auth/login").permitAll()
-//                            .antMatchers("/error").permitAll()
-                            .antMatchers("/auth/signup/*").permitAll()
-                            .antMatchers("/study/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                            .antMatchers("/teacher/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
-                            .antMatchers("/manager/**").hasAuthority("ROLE_ADMIN")
-                    ;
-                }).cors();
+                .addFilter(corsConfig.corsFilter())
+                .csrf().disable()   // csrf 보안 설정을 비활성화한다.
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//              SessionCreationPolicy.ALWAYS - 스프링시큐리티가 항상 세션을 생성
+//              SessionCreationPolicy.IF_REQUIRED - 스프링시큐리티가 필요시 생성(기본)
+//              SessionCreationPolicy.NEVER - 스프링시큐리티가 생성하지않지만, 기존에 존재하면 사용
+//              SessionCreationPolicy.STATELESS - 스프링시큐리티가 생성하지도않고 기존것을 사용하지도 않음
+                .and()
+                .formLogin().disable() // 기본 시큐리티 form로그인화면이 나오지 않음.
+                .httpBasic().disable() // httpBasic auth 기반으로 로그인 인증창이 뜸. disable 시에 인증창 뜨지 않음.
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/auth/login/**").hasRole("ADMIN")
+                .anyRequest().permitAll();
+
+
+//                .formLogin(login -> {
+//                    login.loginPage("/auth/login")  // 로그인페이지
+//                    ;
+//                })
+//                .logout(logout -> {
+//                    logout.logoutSuccessUrl("/")    // 로그아웃 후 메인페이지이동
+//                    ;
+//                })
+//                .rememberMe(config -> {
+//                    config.rememberMeServices(rememberMeServices())
+//                    ;
+//                })
+//                .addFilterAt(filter, UsernamePasswordAuthenticationFilter.class)
+//                .exceptionHandling(exception -> {
+//                    exception.accessDeniedPage("/access-denied");
+//                })
+//                .authorizeRequests(config -> {
+//                    config
+//                            .antMatchers("/").permitAll()
+//                            .antMatchers("/auth/login").permitAll()
+////                            .antMatchers("/error").permitAll()
+//                            .antMatchers("/auth/signup/*").permitAll()
+//                            .antMatchers("/study/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+//                            .antMatchers("/teacher/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
+//                            .antMatchers("/manager/**").hasAuthority("ROLE_ADMIN")
+//                    ;
+//                }).cors();
         ;
     }
-
-    
-    // 시큐리티 cors 맵핑 메서드
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-        web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+//        web.ignoring()
+//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+//    }
 
 }

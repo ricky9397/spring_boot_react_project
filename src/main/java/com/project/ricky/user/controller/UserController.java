@@ -1,10 +1,15 @@
 package com.project.ricky.user.controller;
 
+import com.project.ricky.common.Security.config.UserLogin;
 import com.project.ricky.user.service.UserService;
 import com.project.ricky.user.vo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +39,12 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody User user) throws Exception {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         System.out.println("user =============== " + user);
-        int result = userService.login(user);
 
+        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().getName());
+        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().getDetails());
+        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().toString());
+
+        int result = userService.login(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

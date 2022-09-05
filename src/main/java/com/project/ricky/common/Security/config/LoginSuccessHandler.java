@@ -26,14 +26,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        System.out.println("3333333333333333333333333333333333333333333333333333333333");
         handle(request, response, requestCache.getRequest(request, response), authentication);
         clearAuthenticationAttributes(request);
+        System.out.println("success... 1");
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-//        System.out.println("success... 1");
+        System.out.println("success... 2");
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request) {
@@ -42,16 +42,19 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+        System.out.println("success... 3");
     }
 
 
     protected void handle(HttpServletRequest request, HttpServletResponse response, SavedRequest savedRequest, Authentication authentication) throws IOException {
+        System.out.println("asdasd" + savedRequest.getRedirectUrl());
         String targetUrl = determineTargetUrl(request, savedRequest, authentication);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
         redirectStrategy.sendRedirect(request, response, targetUrl);
+        System.out.println("success... 4");
     }
 
     protected String determineTargetUrl(final HttpServletRequest request, SavedRequest savedRequest, final Authentication authentication) {
@@ -61,6 +64,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 return savedRequest.getRedirectUrl();
             }
         }
+        System.out.println("success... 5");
         if (request.getParameter("site").equals("manager")) {
             return "/manager";
         } else if (request.getParameter("site").equals("study")) {

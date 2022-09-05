@@ -17,4 +17,13 @@ public class UserLogin {
     private String site;
     private boolean rememberme;
 
+    @Override
+    public String toString() {
+        return "UserLogin{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", site='" + site + '\'' +
+                ", rememberme=" + rememberme +
+                '}';
+    }
 }

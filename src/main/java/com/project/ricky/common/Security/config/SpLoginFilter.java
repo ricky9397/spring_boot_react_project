@@ -20,10 +20,9 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
     public SpLoginFilter(
-            AuthenticationManager authenticationManager,
-            RememberMeServices rememberMeServices
+            AuthenticationManager authenticationManager, // AuthenticationManager 주입을 받는다.
+            RememberMeServices rememberMeServices       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
     ) {
-        System.out.println("11111111111111111111111111111111111111111");
         this.authenticationManager = authenticationManager;
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth/login", "POST"));
         this.setAuthenticationSuccessHandler(new LoginSuccessHandler());
@@ -31,10 +30,11 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
         this.setRememberMeServices(rememberMeServices);
     }
 
+    // 통행증을 발급 받기 위한 메소드
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("22222222222222222222222222222222222222222222222");
+        System.out.println("3333333333333333333333333333333333333333333");
         System.out.println(request.getParameter("username"));
 
         UserLogin userLogin = UserLogin.builder()
@@ -43,8 +43,6 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .site(request.getParameter("site"))
                 .rememberme(request.getParameter("remember-me") != null)
                 .build();
-
-
         System.out.println("로그인~~~~~~~~~~~~~~~~~~~~~~~"+userLogin);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 userLogin.getUsername(), userLogin.getPassword(), null
