@@ -6,11 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Set;
 
 @Data
@@ -74,10 +76,10 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
+
     // pk값
     @Override
     public String getUsername() {
-        System.out.println("유저메일11111111111========= " + userEmail);
         return userEmail;
     }
 
@@ -110,6 +112,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
-
 
 }

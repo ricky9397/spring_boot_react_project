@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -40,12 +42,14 @@ public class UserController {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         System.out.println("user =============== " + user);
 
-        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().getName());
-        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().getDetails());
-        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().toString());
-
-        int result = userService.login(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Optional<User> result = userService.login(user);
+        if(result.isPresent()){
+            System.out.println("성공");
+        } else {
+            System.out.println("실패");
+        }
+        System.out.println("예????????");
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 

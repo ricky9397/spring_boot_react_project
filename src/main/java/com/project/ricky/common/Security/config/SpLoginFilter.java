@@ -1,5 +1,7 @@
 package com.project.ricky.common.Security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.ricky.user.vo.User;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,11 +11,8 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -24,7 +23,7 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
             RememberMeServices rememberMeServices       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
     ) {
         this.authenticationManager = authenticationManager;
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth/login", "POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth/logins", "POST"));
         this.setAuthenticationSuccessHandler(new LoginSuccessHandler());
         this.setAuthenticationFailureHandler(new LoginFailureHandler());
         this.setRememberMeServices(rememberMeServices);
@@ -34,39 +33,51 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("3333333333333333333333333333333333333333333");
-        System.out.println(request.getParameter("username"));
+        System.out.println("=====================로그인 시도===================");
+        // ObjectMapper를 이용하여 Json 타입을 객체에 담는다.
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserLogin userLogin = objectMapper.readValue(request.getInputStream(), UserLogin.class);
+        System.out.println(userLogin);
 
-        UserLogin userLogin = UserLogin.builder()
-                .username(request.getParameter("username"))
-                .password(request.getParameter("password"))
-                .site(request.getParameter("site"))
-                .rememberme(request.getParameter("remember-me") != null)
-                .build();
-        System.out.println("로그인~~~~~~~~~~~~~~~~~~~~~~~"+userLogin);
+
+//        UserLogin userLogin = UserLogin.builder()
+//                .username(request.getParameter("username"))
+//                .password(request.getParameter("password"))
+//                .site(request.getParameter("site"))
+//                .rememberme(request.getParameter("remember-me") != null)
+//                .build();
+
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userLogin.getUsername(), userLogin.getPassword(), null
+                userLogin.getUserEmail(), userLogin.getUserPassword(), null
         );
         System.out.println("authToken~~~~~~~~~~~~~~~~~~~~~~~"+authToken);
-        return authenticationManager.authenticate(authToken);
+        Authentication authentication = authenticationManager.authenticate(authToken);
+        System.out.println(authentication);
+        User user = (User) authentication.getPrincipal();
+        System.out.println(user.getUsername());
+        System.out.println("===================================================");
+
+        return authentication;
     }
 
-    @Override
-    protected void successfulAuthentication(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain chain,
-            Authentication authResult) throws IOException, ServletException {
-        super.successfulAuthentication(request, response, chain, authResult);
-    }
+//    @Override
+//    protected void successfulAuthentication(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            FilterChain chain,
+//            Authentication authResult) throws IOException, ServletException {
+//        System.out.println("===================================================1");
+//        super.successfulAuthentication(request, response, chain, authResult);
+//    }
 
-    @Override
-    protected void unsuccessfulAuthentication(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
-    }
+//    @Override
+//    protected void unsuccessfulAuthentication(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            AuthenticationException failed) throws IOException, ServletException {
+//        System.out.println("===================================================2");
+//        super.unsuccessfulAuthentication(request, response, failed);
+//    }
 
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
