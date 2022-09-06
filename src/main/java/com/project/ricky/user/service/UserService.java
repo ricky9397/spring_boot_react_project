@@ -23,7 +23,7 @@ public class UserService {
         log.info("login ===================== {}" , user);
 //        Long result = userRepository.findByUserEmailAndUserPassword(user.getUserEmail(), user.getPassword());
         Optional<User> result = userRepository.findByUserEmail(user.getUserEmail());
-        if(result.isPresent()){
+        if(result != null){
             System.out.println("UserService 로그인 성공");
         } else {
             System.out.println("UserService 로그인 실패");

@@ -1,7 +1,7 @@
 package com.project.ricky.common.Security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.ricky.user.vo.User;
+import com.project.ricky.user.vo.UserDetail;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,14 +11,19 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
+public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
+
+    private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper를 이용하여 Json 타입을 객체에 담는다.
     private final AuthenticationManager authenticationManager;
 
-    public SpLoginFilter(
+    public JWTLoginFilter(
             AuthenticationManager authenticationManager, // AuthenticationManager 주입을 받는다.
             RememberMeServices rememberMeServices       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
     ) {
@@ -29,16 +34,12 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
         this.setRememberMeServices(rememberMeServices);
     }
 
-    // 통행증을 발급 받기 위한 메소드
-    @SneakyThrows
-    @Override
+    
+    @SneakyThrows  // try, catch 역할 어너테이션
+    @Override      // 통행증을 발급 받기 위한 메소드
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         System.out.println("=====================로그인 시도===================");
-        // ObjectMapper를 이용하여 Json 타입을 객체에 담는다.
-        ObjectMapper objectMapper = new ObjectMapper();
         UserLogin userLogin = objectMapper.readValue(request.getInputStream(), UserLogin.class);
-        System.out.println(userLogin);
-
 
 //        UserLogin userLogin = UserLogin.builder()
 //                .username(request.getParameter("username"))
@@ -50,25 +51,27 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 userLogin.getUserEmail(), userLogin.getUserPassword(), null
         );
-        System.out.println("authToken~~~~~~~~~~~~~~~~~~~~~~~"+authToken);
-        Authentication authentication = authenticationManager.authenticate(authToken);
-        System.out.println(authentication);
-        User user = (User) authentication.getPrincipal();
-        System.out.println(user.getUsername());
-        System.out.println("===================================================");
 
-        return authentication;
+        // 1. UserDetailsService 의 findByUserEmail() 함수 실행됨.
+        // 2. UserDetailsService 의 사용자가 있으면 권한부여 받고 -> successfulAuthentication()로 호출한다.
+        return authenticationManager.authenticate(authToken);
     }
 
-//    @Override
-//    protected void successfulAuthentication(
-//            HttpServletRequest request,
-//            HttpServletResponse response,
-//            FilterChain chain,
-//            Authentication authResult) throws IOException, ServletException {
-//        System.out.println("===================================================1");
-//        super.successfulAuthentication(request, response, chain, authResult);
-//    }
+    @Override
+    protected void successfulAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain,
+            Authentication authResult) throws ServletException, IOException {
+
+        UserDetail userDetail = (UserDetail) authResult.getPrincipal();
+
+
+        System.out.println("=========================================================================================");
+        System.out.println("========================successfulAuthentication========================================");
+        System.out.println("=========================================================================================");
+        super.successfulAuthentication(request, response, chain, authResult);
+    }
 
 //    @Override
 //    protected void unsuccessfulAuthentication(

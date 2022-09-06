@@ -1,16 +1,13 @@
 package com.project.ricky.common.Security.config;
 
 import com.project.ricky.common.config.CorsConfig;
-import com.project.ricky.common.jwt.JwtAuthenticationFilter;
 import com.project.ricky.user.service.UserSecurityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,14 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        System.out.println("auth.userDetailsService(userSecurityService).passwordEncoder(encoderPwd())");
         auth.userDetailsService(userSecurityService).passwordEncoder(encoderPwd());
     }
 
     // 시큐리티에서 제공하는 cookie 에 Remember Me 기능
     private RememberMeServices rememberMeServices() {
-        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-
         TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(
                 "paper-site-remember-me",
                 userSecurityService
@@ -50,13 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         rememberMeServices.setParameter("remember-me");
         rememberMeServices.setAlwaysRemember(true);
         rememberMeServices.setTokenValiditySeconds(3600);
+
         return rememberMeServices;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("ccccccccccccccccccccccccccccccccccccccccccccc");
-        final SpLoginFilter filter = new SpLoginFilter(
+        final JWTLoginFilter filter = new JWTLoginFilter(
                 authenticationManagerBean(),
                 rememberMeServices()
         );
@@ -94,18 +88,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .exceptionHandling(exception -> {
 //                    exception.accessDeniedPage("/access-denied");
 //                })
-//                .authorizeRequests(config -> {
-//                    config
-//                            .antMatchers("/").permitAll()
-//                            .antMatchers("/auth/logins").permitAll()
-//                            .antMatchers("/error").permitAll()
-//                            .antMatchers("/auth/signup/*").permitAll()
-//                            .antMatchers("/study/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-//                            .antMatchers("/teacher/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
-//                            .antMatchers("/manager/**").hasAuthority("ROLE_ADMIN")
-//                    ;
-//                });
-        ;
+                .authorizeRequests(config -> {
+                    config
+                            .antMatchers("/").permitAll()
+                            .antMatchers("/auth/logins").permitAll()
+                            .antMatchers("/error").permitAll()
+                            .antMatchers("/auth/signup/*").permitAll()
+                            .antMatchers("/study/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                            .antMatchers("/teacher/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
+                            .antMatchers("/manager/**").hasAuthority("ROLE_ADMIN")
+                    ;
+                });
+        System.out.println("여기로 오나요?");
     }
 //    @Override
 //    public void configure(WebSecurity web) throws Exception {

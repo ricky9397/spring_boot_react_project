@@ -11,10 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -42,8 +39,9 @@ public class UserController {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         System.out.println("user =============== " + user);
 
+//        Optional<User> result = userService.login(user);
         Optional<User> result = userService.login(user);
-        if(result.isPresent()){
+        if(result != null){
             System.out.println("성공");
         } else {
             System.out.println("실패");
@@ -51,6 +49,5 @@ public class UserController {
         System.out.println("예????????");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
 
 }
