@@ -11,10 +11,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,13 +39,15 @@ public class UserController {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         System.out.println("user =============== " + user);
 
-        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().getName());
-        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().getDetails());
-        System.out.println("SecurityContextHolder" + SecurityContextHolder.getContext().getAuthentication().toString());
-
-        int result = userService.login(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+//        Optional<User> result = userService.login(user);
+        Optional<User> result = userService.login(user);
+        if(result != null){
+            System.out.println("성공");
+        } else {
+            System.out.println("실패");
+        }
+        System.out.println("예????????");
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
 
 }

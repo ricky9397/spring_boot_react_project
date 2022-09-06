@@ -1,5 +1,7 @@
 package com.project.ricky.common.Security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.ricky.user.vo.UserDetail;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,39 +17,43 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
+public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
+
+    private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper를 이용하여 Json 타입을 객체에 담는다.
     private final AuthenticationManager authenticationManager;
 
-    public SpLoginFilter(
+    public JWTLoginFilter(
             AuthenticationManager authenticationManager, // AuthenticationManager 주입을 받는다.
             RememberMeServices rememberMeServices       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
     ) {
         this.authenticationManager = authenticationManager;
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth/login", "POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth/logins", "POST"));
         this.setAuthenticationSuccessHandler(new LoginSuccessHandler());
         this.setAuthenticationFailureHandler(new LoginFailureHandler());
         this.setRememberMeServices(rememberMeServices);
     }
 
-    // 통행증을 발급 받기 위한 메소드
-    @SneakyThrows
-    @Override
+    
+    @SneakyThrows  // try, catch 역할 어너테이션
+    @Override      // 통행증을 발급 받기 위한 메소드
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("3333333333333333333333333333333333333333333");
-        System.out.println(request.getParameter("username"));
+        System.out.println("=====================로그인 시도===================");
+        UserLogin userLogin = objectMapper.readValue(request.getInputStream(), UserLogin.class);
 
-        UserLogin userLogin = UserLogin.builder()
-                .username(request.getParameter("username"))
-                .password(request.getParameter("password"))
-                .site(request.getParameter("site"))
-                .rememberme(request.getParameter("remember-me") != null)
-                .build();
-        System.out.println("로그인~~~~~~~~~~~~~~~~~~~~~~~"+userLogin);
+//        UserLogin userLogin = UserLogin.builder()
+//                .username(request.getParameter("username"))
+//                .password(request.getParameter("password"))
+//                .site(request.getParameter("site"))
+//                .rememberme(request.getParameter("remember-me") != null)
+//                .build();
+
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userLogin.getUsername(), userLogin.getPassword(), null
+                userLogin.getUserEmail(), userLogin.getUserPassword(), null
         );
-        System.out.println("authToken~~~~~~~~~~~~~~~~~~~~~~~"+authToken);
+
+        // 1. UserDetailsService 의 findByUserEmail() 함수 실행됨.
+        // 2. UserDetailsService 의 사용자가 있으면 권한부여 받고 -> successfulAuthentication()로 호출한다.
         return authenticationManager.authenticate(authToken);
     }
 
@@ -56,17 +62,25 @@ public class SpLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain,
-            Authentication authResult) throws IOException, ServletException {
+            Authentication authResult) throws ServletException, IOException {
+
+        UserDetail userDetail = (UserDetail) authResult.getPrincipal();
+
+
+        System.out.println("=========================================================================================");
+        System.out.println("========================successfulAuthentication========================================");
+        System.out.println("=========================================================================================");
         super.successfulAuthentication(request, response, chain, authResult);
     }
 
-    @Override
-    protected void unsuccessfulAuthentication(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
-    }
+//    @Override
+//    protected void unsuccessfulAuthentication(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            AuthenticationException failed) throws IOException, ServletException {
+//        System.out.println("===================================================2");
+//        super.unsuccessfulAuthentication(request, response, failed);
+//    }
 
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");

@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserLogin {
 
-    private String username;
-    private String password;
+    private String userEmail;
+    private String userPassword;
     private String site;
     private boolean rememberme;
 
     @Override
     public String toString() {
         return "UserLogin{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                "userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
                 ", site='" + site + '\'' +
                 ", rememberme=" + rememberme +
                 '}';
