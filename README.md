@@ -13,3 +13,8 @@
 - 스프링클라우드 + 리눅스 + Doker + Jenkese 배포
 - MySql
 
+
+
+# Security
+ 1. 사용자가 로그인을 하였을 때 LoginFilter를 만들어 UsernamePasswordAuthenticationFilter 로그인 성공여부 체크를 한다.
+ 2. 
