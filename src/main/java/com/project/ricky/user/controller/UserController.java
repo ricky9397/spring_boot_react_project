@@ -34,20 +34,20 @@ public class UserController {
         }
     }
 
-    @PostMapping("/logins")
-    public ResponseEntity<?> login(@RequestBody User user) throws Exception {
-        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-        System.out.println("user =============== " + user);
-
+//    @PostMapping("/logins")
+//    public ResponseEntity<?> login(@RequestBody User user) throws Exception {
+//        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+//        System.out.println("user =============== " + user);
+//
+////        Optional<User> result = userService.login(user);
 //        Optional<User> result = userService.login(user);
-        Optional<User> result = userService.login(user);
-        if(result != null){
-            System.out.println("성공");
-        } else {
-            System.out.println("실패");
-        }
-        System.out.println("예????????");
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+//        if(result != null){
+//            System.out.println("성공");
+//        } else {
+//            System.out.println("실패");
+//        }
+//        System.out.println("예????????");
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
 
 }

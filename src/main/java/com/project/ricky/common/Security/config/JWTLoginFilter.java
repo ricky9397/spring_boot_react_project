@@ -1,15 +1,17 @@
 package com.project.ricky.common.Security.config;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.ricky.user.service.UserSecurityService;
 import com.project.ricky.user.vo.UserDetail;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,42 +21,47 @@ import java.io.IOException;
 
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-
     private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper를 이용하여 Json 타입을 객체에 담는다.
     private final AuthenticationManager authenticationManager;
+    private final UserSecurityService userSecurityService;
 
     public JWTLoginFilter(
-            AuthenticationManager authenticationManager, // AuthenticationManager 주입을 받는다.
-            RememberMeServices rememberMeServices       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
+            AuthenticationManager authenticationManager,    // AuthenticationManager 주입을 받는다.
+            UserSecurityService userSecurityService
+//            RememberMeServices rememberMeServices       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
     ) {
         this.authenticationManager = authenticationManager;
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth/logins", "POST"));
-        this.setAuthenticationSuccessHandler(new LoginSuccessHandler());
-        this.setAuthenticationFailureHandler(new LoginFailureHandler());
-        this.setRememberMeServices(rememberMeServices);
+        this.userSecurityService = userSecurityService;
+        setFilterProcessesUrl("/auth/logins");
+//        this.setRememberMeServices(rememberMeServices);
     }
 
-    
+
     @SneakyThrows  // try, catch 역할 어너테이션
     @Override      // 통행증을 발급 받기 위한 메소드
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         System.out.println("=====================로그인 시도===================");
         UserLogin userLogin = objectMapper.readValue(request.getInputStream(), UserLogin.class);
-
-//        UserLogin userLogin = UserLogin.builder()
-//                .username(request.getParameter("username"))
-//                .password(request.getParameter("password"))
-//                .site(request.getParameter("site"))
+        if (userLogin.getRefreshToken() == null) {
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userLogin.getUserEmail(), userLogin.getUserPassword(), null
+            );
+            // 1. UserDetailsService 의 findByUserEmail() 함수 실행됨.
+            // 2. UserDetailsService 의 사용자가 있으면 권한부여 받고 -> successfulAuthentication()로 호출한다.
+            return authenticationManager.authenticate(authToken);
+        } else {
+            VerifyResult verify = JWTUtil.verify(userLogin.getRefreshToken());
+            if (verify.isSuccess()) { // 유효한토큰일 경우..
+                UserDetail userDetail = (UserDetail) userSecurityService.loadUserByUsername(verify.getUsername());
+                return new UsernamePasswordAuthenticationToken(
+                        userDetail, userDetail.getAuthorities()
+                );
+            } else { // 유효하지않다면 Exception
+                throw new TokenExpiredException("refresh token expired");
+            }
+        }
 //                .rememberme(request.getParameter("remember-me") != null)
-//                .build();
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userLogin.getUserEmail(), userLogin.getUserPassword(), null
-        );
-
-        // 1. UserDetailsService 의 findByUserEmail() 함수 실행됨.
-        // 2. UserDetailsService 의 사용자가 있으면 권한부여 받고 -> successfulAuthentication()로 호출한다.
-        return authenticationManager.authenticate(authToken);
     }
 
     @Override
@@ -64,13 +71,14 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             FilterChain chain,
             Authentication authResult) throws ServletException, IOException {
 
-        UserDetail userDetail = (UserDetail) authResult.getPrincipal();
+        UserDetail userDetail = (UserDetail) authResult.getPrincipal(); // 성공한 유저정보를 UserDetail객체에 담는다.
 
-
-        System.out.println("=========================================================================================");
-        System.out.println("========================successfulAuthentication========================================");
-        System.out.println("=========================================================================================");
-        super.successfulAuthentication(request, response, chain, authResult);
+        logger.info("=======================토큰 발행 시작=======================================");
+        response.setHeader("auth_token", JWTUtil.makeAuthToken(userDetail));
+        response.setHeader("refresh_token", JWTUtil.makeRefreshToken(userDetail));
+        logger.info("=======================토큰 발행 끝========================================");
+        response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
 
 //    @Override
@@ -82,23 +90,5 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 //        super.unsuccessfulAuthentication(request, response, failed);
 //    }
 
-    public static String getIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
-    }
+
 }
