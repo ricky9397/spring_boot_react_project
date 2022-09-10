@@ -4,11 +4,14 @@ import com.project.ricky.user.repository.UserRepository;
 import com.project.ricky.user.vo.User;
 import com.project.ricky.user.vo.UserDetail;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserSecurityService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
 
     @Override // 시큐리티 session(내부 Authentication(내부 UserDetails))
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

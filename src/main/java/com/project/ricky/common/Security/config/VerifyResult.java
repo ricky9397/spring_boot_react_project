@@ -1,6 +1,5 @@
 package com.project.ricky.common.Security.config;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserLogin {
+public class VerifyResult {
 
-    private String userEmail;
-    private String userPassword;
-    private String refreshToken;
-    private boolean rememberme;
+    private boolean success;
+    private String username;
 
 }
