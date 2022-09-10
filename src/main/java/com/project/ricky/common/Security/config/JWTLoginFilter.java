@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -27,13 +28,13 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public JWTLoginFilter(
             AuthenticationManager authenticationManager,    // AuthenticationManager 주입을 받는다.
+            RememberMeServices rememberMeServices,       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
             UserSecurityService userSecurityService
-//            RememberMeServices rememberMeServices       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
     ) {
         this.authenticationManager = authenticationManager;
         this.userSecurityService = userSecurityService;
-        setFilterProcessesUrl("/auth/logins");
-//        this.setRememberMeServices(rememberMeServices);
+        this.setRememberMeServices(rememberMeServices);
+        setFilterProcessesUrl("/auth/login");
     }
 
 
@@ -80,15 +81,17 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
-
-//    @Override
-//    protected void unsuccessfulAuthentication(
-//            HttpServletRequest request,
-//            HttpServletResponse response,
-//            AuthenticationException failed) throws IOException, ServletException {
-//        System.out.println("===================================================2");
-//        super.unsuccessfulAuthentication(request, response, failed);
-//    }
+    
+    
+    // 로그인 실패시 처리
+    @Override
+    protected void unsuccessfulAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException failed) throws IOException, ServletException {
+        System.out.println("===================================================2");
+        super.unsuccessfulAuthentication(request, response, failed);
+    }
 
 
 }

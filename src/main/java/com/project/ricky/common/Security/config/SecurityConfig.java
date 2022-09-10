@@ -2,7 +2,6 @@ package com.project.ricky.common.Security.config;
 
 import com.project.ricky.common.config.CorsConfig;
 import com.project.ricky.user.service.UserSecurityService;
-import com.project.ricky.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,12 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager(), userSecurityService);
+        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager(), rememberMeServices(), userSecurityService);
         JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager(), userSecurityService);
-//        final JWTLoginFilter filter = new JWTLoginFilter(
-//                authenticationManagerBean(),
-//                rememberMeServices()
-//        );
         http
                 .addFilter(corsConfig.corsFilter())
                 .csrf().disable()   // csrf 보안 설정을 비활성화한다.
@@ -68,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(config -> {
                     config
                             .antMatchers("/").permitAll()
-                            .antMatchers("/auth/logins").permitAll()
+                            .antMatchers("/auth/login").permitAll()
 //                            .antMatchers("/error").permitAll()
                             .antMatchers("/auth/signup/*").permitAll()
                             .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
@@ -76,24 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                            .antMatchers("/auth/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER")
                     ;
                 });
-//                .and()
-//                .formLogin().disable() // 기본 시큐리티 form로그인화면이 나오지 않음.
-//                .httpBasic().disable() // httpBasic auth 기반으로 로그인 인증창이 뜸. disable 시에 인증창 뜨지 않음.
-//                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-//                .authorizeRequests()
-//                .antMatchers("/").permitAll()
-//                .antMatchers("/auth/logins/**").hasRole("ADMIN")
-//                .anyRequest().permitAll();
-
-
-//                .formLogin(login -> {
-//                    login.loginPage("/auth/logins")  // 로그인페이지
-//                    ;
-//                })
-//                .logout(logout -> {
-//                    logout.logoutSuccessUrl("/")    // 로그아웃 후 메인페이지이동
-//                    ;
-//                })
 //                .rememberMe(config -> {
 //                    config.rememberMeServices(rememberMeServices())
 //                    ;

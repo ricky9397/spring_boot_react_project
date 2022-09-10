@@ -20,13 +20,18 @@ const Login = () => {
   const submit = async(e) =>{
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/auth/logins",{
+      await axios.post("http://localhost:8080/auth/login",{
         userEmail,
         userPassword
       }).then(res => {
+        console.log(res);
         if(res.status == 200){
           console.log("성공");
-        }
+          console.log(2, res.data);
+          localStorage.setItem("jwtToken", res.data);
+          sessionStorage.setItem("jwtToken", res.data);
+          
+        } 
       });
       
     } catch (e) {
