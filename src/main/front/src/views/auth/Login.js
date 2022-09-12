@@ -16,17 +16,24 @@ const Login = () => {
     setUserPassword(e.currentTarget.value);
   }
 
+  const headers = {
+    'Content-Type' : 'application/json',
+    // 'Authorization' : 
+  }
 
   const submit = async(e) =>{
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/auth/logins",{
+      await axios.post("http://localhost:8080/auth/login",{
         userEmail,
         userPassword
       }).then(res => {
         if(res.status == 200){
           console.log("성공");
-        }
+          console.log(3, res.headers);
+          localStorage.setItem("jwtToken", res.headers.authorization);
+          // sessionStorage.setItem("jwtToken", res.data);
+        } 
       });
       
     } catch (e) {
