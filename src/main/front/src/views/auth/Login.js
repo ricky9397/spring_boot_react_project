@@ -16,6 +16,10 @@ const Login = () => {
     setUserPassword(e.currentTarget.value);
   }
 
+  const headers = {
+    'Content-Type' : 'application/json',
+    // 'Authorization' : 
+  }
 
   const submit = async(e) =>{
     e.preventDefault();
@@ -24,13 +28,11 @@ const Login = () => {
         userEmail,
         userPassword
       }).then(res => {
-        console.log(res);
         if(res.status == 200){
           console.log("성공");
-          console.log(2, res.data);
-          localStorage.setItem("jwtToken", res.data);
-          sessionStorage.setItem("jwtToken", res.data);
-          
+          console.log(3, res.headers);
+          localStorage.setItem("jwtToken", res.headers.authorization);
+          // sessionStorage.setItem("jwtToken", res.data);
         } 
       });
       

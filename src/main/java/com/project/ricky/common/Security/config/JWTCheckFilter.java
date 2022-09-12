@@ -31,6 +31,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
+        System.out.println("header======" + request.getHeader(HttpHeaders.AUTHORIZATION));
         // header가 있는지 확인
         if(bearer == null || !bearer.startsWith("Bearer ")){
             chain.doFilter(request, response);
