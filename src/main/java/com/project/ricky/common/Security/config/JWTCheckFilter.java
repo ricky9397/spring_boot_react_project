@@ -47,6 +47,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(
                     userDetail.getUsername(), null, userDetail.getAuthorities()
             );
+            System.out.println(userToken);
             // 강제로 시큐리티의 세션에 접근하여 Authentication 객체를 저장.
             SecurityContextHolder.getContext().setAuthentication(userToken);
             chain.doFilter(request, response);

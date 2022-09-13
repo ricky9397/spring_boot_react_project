@@ -1,12 +1,12 @@
 import axios from "axios";
 import React,{useState} from "react";
 import { Link } from "react-router-dom";
+import {useSelector} from "react-redux";
 
-const Login = () => {
+const Login = ({history}) => {
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
-
 
   const onEmailHandler = (e) => {
     setUserEmail(e.currentTarget.value);
@@ -16,23 +16,23 @@ const Login = () => {
     setUserPassword(e.currentTarget.value);
   }
 
-  const headers = {
-    'Content-Type' : 'application/json',
-    // 'Authorization' : 
-  }
-
   const submit = async(e) =>{
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/auth/login",{
-        userEmail,
-        userPassword
+      const data = { 'userEmail' : userEmail, 'userPassword' : userPassword }
+      await axios.post("http://localhost:8080/auth/login", JSON.stringify(data) , {
+        // userEmail,
+        // userPassword
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
       }).then(res => {
         if(res.status == 200){
-          console.log("성공");
-          console.log(3, res.headers);
-          localStorage.setItem("jwtToken", res.headers.authorization);
-          // sessionStorage.setItem("jwtToken", res.data);
+          console.log(res);
+          localStorage.setItem("auth_token", res.headers.auth_token);
+          axios.defaults.headers.common["Authorization"] = "Bearer " + res.headers.auth_token;
+          history.push('/');
         } 
       });
       

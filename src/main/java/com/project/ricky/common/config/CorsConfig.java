@@ -19,7 +19,8 @@ public class CorsConfig {
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("Authorization"); // 로그인시 Authorization 헤더에 전달하기 위한 cors
+        configuration.addExposedHeader("auth_token"); // 로그인시 Authorization 헤더에 전달하기 위한 cors
+        configuration.addExposedHeader("refresh_token");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(source);
