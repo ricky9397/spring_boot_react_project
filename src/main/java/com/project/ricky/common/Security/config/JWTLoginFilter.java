@@ -75,8 +75,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         UserDetail userDetail = (UserDetail) authResult.getPrincipal(); // 성공한 유저정보를 UserDetail객체에 담는다.
 
         logger.info("=======================토큰 발행 시작=======================================");
-//        response.setHeader("auth_token", JWTUtil.makeAuthToken(userDetail));
-        response.setHeader("Authorization ", JWTUtil.makeAuthToken(userDetail));
+        response.setHeader("auth_token", JWTUtil.makeAuthToken(userDetail));
         response.setHeader("refresh_token", JWTUtil.makeRefreshToken(userDetail));
         logger.info("=======================토큰 발행 끝========================================");
         response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
