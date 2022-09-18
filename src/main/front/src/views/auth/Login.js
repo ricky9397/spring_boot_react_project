@@ -1,9 +1,8 @@
 import axios from "axios";
 import React,{useState} from "react";
 import { Link } from "react-router-dom";
-import {useSelector} from "react-redux";
 
-const Login = ({history}) => {
+const Login = ({handleLogin, history}) => {
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -29,15 +28,18 @@ const Login = ({history}) => {
         withCredentials: true
       }).then(res => {
         if(res.status == 200){
-          console.log(res);
-          localStorage.setItem("auth_token", res.headers.auth_token);
-          axios.defaults.headers.common["Authorization"] = "Bearer " + res.headers.auth_token;
-          history.push('/');
+          const setToken = {
+            "auth_token" : res.headers.auth_token,
+            "refresh_token" : res.headers.refresh_token
+          }
+          handleLogin(setToken); // 토큰 발송
+          history.push("/"); // 로그인 성공 후 메인화면 이동.
         } 
       });
       
     } catch (e) {
-      // console.log(e.response.data.message);
+      console.log(e.message);
+      handleLogin("undefined");
     }
   }
 
