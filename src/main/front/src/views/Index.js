@@ -3,11 +3,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import mainImg from "../assets/img/pattern_react.png";
 
-
+// nav, footer
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import Footer from "components/Footers/Footer.js";
 
-export default function Index() {
+const Index = () => {
   return (
     <>
       <IndexNavbar fixed />
@@ -668,3 +668,5 @@ export default function Index() {
     </>
   );
 }
+
+export default Index;
