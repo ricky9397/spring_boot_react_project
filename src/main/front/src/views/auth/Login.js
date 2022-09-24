@@ -20,8 +20,6 @@ const Login = ({handleLogin, history}) => {
     try {
       const data = { 'userEmail' : userEmail, 'userPassword' : userPassword }
       await axios.post("http://localhost:8080/auth/login", JSON.stringify(data) , {
-        // userEmail,
-        // userPassword
         headers: {
           "Content-Type": "application/json",
         },

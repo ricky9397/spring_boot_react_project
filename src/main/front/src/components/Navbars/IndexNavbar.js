@@ -85,18 +85,28 @@ export default function Navbar(props) {
               </li>
 
               <li className="flex items-center">
-                {/* <button
+                <button
                   className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
                   type="button"
                 >
-                  <i className="fas fa-arrow-alt-circle-down"></i> 로그인
-                </button> */}
-                <Link
-                  to="/auth/login"
-                  className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+                  <i className="fas fa-arrow-alt-circle-down text-xs py-1 px-2 font-bold w-full whitespace-nowrap bg-transparent text-white">
+                    <Link to="/auth/login">
+                      로그인
+                    </Link>
+                  </i>
+                {/* <i className="fas fa-arrow-alt-circle-down"></i> 로그인 */}
+                </button>
+                <button
+                  className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                  type="button"
                 >
-                  로그인
-                </Link>
+                  <i className="fas fa-arrow-alt-circle-down text-xs py-1 px-2 font-bold w-full whitespace-nowrap bg-transparent text-white">
+                    <Link to="/auth/logout">
+                    로그아웃
+                    </Link>
+                  </i>
+                {/* <i className="fas fa-arrow-alt-circle-down"></i> 로그인 */}
+                </button>
               </li>
             </ul>
           </div>
