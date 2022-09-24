@@ -90,7 +90,6 @@ const Auth = () => {
           ></div>
           <Switch>
             <Route path="/auth/login" authenticated={state.authenticated} exact component={(props) => <Login {...props} handleLogin={handleLogin} />} />
-            <Route path="/auth/logout" authenticated={state.authenticated} handleLogout={handleLogout} />
             <Route path="/auth/register" exact component={Register} />
             <Redirect from="/auth" to="/auth/login" />
           </Switch>
