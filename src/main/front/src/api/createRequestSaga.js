@@ -10,7 +10,7 @@ export const createRequestActionTypes = type => {
 export default function createRequestSaga(type, request) {
 
     console.log("createRequest 시작");
-    console.log(request);
+    console.log("request",request);
     console.log("type========",type);
 
     const SUCCESS = `${type}_SUCCESS`;
