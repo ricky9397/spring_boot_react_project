@@ -33,6 +33,7 @@
     "redux": "^4.2.0",
     "redux-actions": "^2.6.5",
     "redux-devtools-extension": "^2.13.9",
+    "redux-saga": "^1.2.1",
     "sass": "^1.54.9",
     "tailwindcss": "2.0.4",
     "universal-cookie": "^4.0.4"

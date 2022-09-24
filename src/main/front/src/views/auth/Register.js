@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from "../../api/auth";
 
 // export default function Register() {
 const Register = () => {
+  const dispatch = useDispatch();
+  
+  const { form, auth, authError } = useSelector(({ auth }) => ({
+    // form: auth.register,
+    auth: auth.auth,
+    authError: auth.authError,
+  }));
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -13,25 +21,25 @@ const Register = () => {
 
   const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState(false);
-  const replaceRegExp = /\s/g; 
+  const replaceRegExp = /\s/g;
 
-  const onEmailHandler = (e) => { 
+  const onEmailHandler = (e) => {
     // 이메일 정규식
     const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
     // 공백 제거 
     setUserEmail(e.currentTarget.value.replace(replaceRegExp, ''));
-    if(!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value === ""){
+    if (!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
       setError(true); // disabled 처리하기 위한 error 로직
     } else {
       setError(false);
     }
   };
 
-  const onPwHandler = (e) => { 
+  const onPwHandler = (e) => {
     // 비밀번호 정규식
     const passwordRegEx = /^[A-Za-z0-9]{6,12}$/;
     setUserPassword(e.currentTarget.value.replace(replaceRegExp, ''));
-    if(!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value === ""){
+    if (!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value === "") {
       setError(true);
     } else {
       setError(false);
@@ -39,11 +47,11 @@ const Register = () => {
   };
 
   const onNameHanlder = (e) => { setUserName(e.currentTarget.value); };
-  const onPhoneHandler = (e) => { 
+  const onPhoneHandler = (e) => {
     // 전화번호 정규식
     const phoneRegExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
-    setUserPhone(e.currentTarget.value); 
-    if(!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value === ""){
+    setUserPhone(e.currentTarget.value);
+    if (!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
       setError(true);
     } else {
       setError(false);
@@ -51,7 +59,7 @@ const Register = () => {
   };
   // 체크박스
   const onCheckHandler = (checked) => {
-    if(checked){
+    if (checked) {
       setError(false);
       setUserCheck('Y');
     } else {
@@ -63,30 +71,52 @@ const Register = () => {
   // 회원가입 버튼 활성화 / 비활성화
   useEffect(() => {
     setDisabled(!(userEmail && userName && userPhone && userYn && !error));
-  }, [userEmail,  userPassword, userPhone, userYn]);
-
-
+  }, [userEmail, userPassword, userPhone, userYn]);
 
   const submit = async (e) => {
     e.preventDefault();
+    const data = {
+      userEmail: userEmail,
+      userPassword: userPassword,
+      userName: userName,
+      userPhone: userPhone,
+      userYn: userYn,
+    }
+
+    dispatch(register(data));
     try {
-      await axios.post("http://localhost:8080/auth/register",{
-        userEmail,
-        userPassword,
-        userName,
-        userPhone,
-        userYn
-      }).then(res => {
-        if(res.status == '200'){
-            
-        } 
-      });
-    } catch(e) {
+      // await axios.post("http://localhost:8080/auth/register", {
+      //   userEmail,
+      //   userPassword,
+      //   userName,
+      //   userPhone,
+      //   userYn
+      // }).then(res => {
+      //   if (res.status == '200') {
+
+      //   }
+      // });
+    } catch (e) {
       // 서버에서 받은 에러 메시지 출력
       console.log(e.response.data.message);
       alert("관리자에게 문의하세요.");
     }
   }
+
+  // 회원가입 성공 / 실패 처리
+  useEffect(() => {
+    if (authError) {
+      // 계정명이 이미 존재할 때
+      console.log("오류발생");
+      console.log(authError);
+    }
+
+    if (auth) {
+      console.log("회원가입성공");
+      console.log(auth);
+    }
+  }, [auth, authError, dispatch]);
+
 
   return (
     <>
@@ -141,7 +171,7 @@ const Register = () => {
                     <input
                       type="email"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email" value={userEmail} onChange={onEmailHandler} 
+                      placeholder="Email" value={userEmail} onChange={onEmailHandler}
                     />
                   </div>
 
@@ -193,7 +223,7 @@ const Register = () => {
                         id="customCheckLogin"
                         type="checkbox"
                         className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
-                        onChange={e => {onCheckHandler(e.target.checked);}}
+                        onChange={e => { onCheckHandler(e.target.checked); }}
                       />
                       <span className="ml-2 text-sm font-semibold text-blueGray-600">
                         개인정보 보호정책에{" "}
@@ -211,7 +241,7 @@ const Register = () => {
                   <div className="text-center mt-6">
                     <button
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                      disabled={disabled} type="submit" 
+                      disabled={disabled} type="submit"
                     >
                       회원가입
                     </button>

@@ -21,13 +21,17 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) throws Exception{
-        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-        Long result = userService.register(user);
-        if(result == 0){
-            return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
-        } else {
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        }
+
+        System.out.println(user);
+
+//        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+//        Long result = userService.register(user);
+//        if(result == 0){
+//            return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
+//        } else {
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        }
+        return new ResponseEntity<>(1, HttpStatus.OK);
     }
 
 //    @PostMapping("/logins")
