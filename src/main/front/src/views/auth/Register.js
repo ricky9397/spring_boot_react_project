@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
-import { register } from "../../api/auth";
-import { changeField } from '../../modules/auth';
+// import { register } from "../../api/auth";
+import { changeField, initializeForm, register } from '../../modules/auth';
 
 // export default function Register() {
 const Register = () => {
+
   const dispatch = useDispatch();
+
+  // 컴포넌트가 처음 렌더링 될 때 form 을 초기화함
+  useEffect(() => {
+    dispatch(initializeForm('register'));
+  }, [dispatch]);
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -54,7 +59,10 @@ const Register = () => {
     target(e);
   };
 
-  const onNameHanlder = (e) => { setUserName(e.currentTarget.value); };
+  const onNameHanlder = (e) => {
+    setUserName(e.currentTarget.value);
+    target(e);
+  };
   const onPhoneHandler = (e) => {
     // 전화번호 정규식
     const phoneRegExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
@@ -66,16 +74,8 @@ const Register = () => {
     }
     target(e);
   };
-  // 체크박스
-  // const onCheckHandler = (checked) => {
-  //   if (checked) {
-  //     setError(false);
-  //     setUserCheck('Y');
-  //   } else {
-  //     setError(true);
-  //     setUserCheck('');
-  //   }
-  // }
+
+  // 체크박스 핸들러
   const onCheckHandler = (checked, name) => {
     if (checked) {
       setError(false);
@@ -88,10 +88,9 @@ const Register = () => {
       changeField({
         form: 'register',
         key: name,
-        value : userYn,
+        value: userYn,
       }),
     );
-
   }
 
   // 회원가입 버튼 활성화 / 비활성화
@@ -99,8 +98,13 @@ const Register = () => {
     setDisabled(!(userEmail && userName && userPhone && userYn && !error));
   }, [userEmail, userPassword, userPhone, userYn]);
 
+  // submit!
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    /* valid 정규 식 버튼눌럿을때 이벤트 되도록 변경 해야 한다. */
+
+
     const data = {
       userEmail: userEmail,
       userPassword: userPassword,
@@ -108,40 +112,9 @@ const Register = () => {
       userPhone: userPhone,
       userYn: userYn,
     }
-
-    // dispatch(register(data));
-    try {
-      // await axios.post("http://localhost:8080/auth/register", {
-      //   userEmail,
-      //   userPassword,
-      //   userName,
-      //   userPhone,
-      //   userYn
-      // }).then(res => {
-      //   if (res.status == '200') {
-
-      //   }
-      // });
-    } catch (e) {
-      // 서버에서 받은 에러 메시지 출력
-      console.log(e.response.data.message);
-      alert("관리자에게 문의하세요.");
-    }
+    // redux 서버 호출
+    dispatch(register(data));
   }
-
-  // 회원가입 성공 / 실패 처리
-  // useEffect(() => {
-  //   if (authError) {
-  //     // 계정명이 이미 존재할 때
-  //     console.log("오류발생");
-  //     console.log(authError);
-  //   }
-
-  //   if (auth) {
-  //     console.log("회원가입성공");
-  //     console.log(auth);
-  //   }
-  // }, [auth, authError, dispatch]);
 
   return (
     <div className="container mx-auto px-4 h-full">
@@ -196,7 +169,6 @@ const Register = () => {
                     type="email"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     autoComplete="userEmail" name="userEmail" placeholder="Email" value={userEmail} onChange={onEmailHandler}
-                  // autoComplete="userEmail" name="userEmail" placeholder="Email" value={form.userEmail} onChange={onChange}
                   />
                 </div>
 
@@ -211,7 +183,6 @@ const Register = () => {
                     type="password"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     autoComplete="userPassword" name="userPassword" placeholder="Password" value={userPassword} onChange={onPwHandler}
-                  // placeholder="Password" value={form.userPassword} onChange={onChange}
                   />
                 </div>
 
@@ -226,7 +197,6 @@ const Register = () => {
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     autoComplete="userName" name="userName" placeholder="Name" value={userName} onChange={onNameHanlder}
-                  // placeholder="Name" value={form.userName} onChange={onChange}
                   />
                 </div>
 
@@ -241,7 +211,6 @@ const Register = () => {
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     autoComplete="userPhone" name="userPhone" placeholder="Phone" value={userPhone} onChange={onPhoneHandler}
-                  // placeholder="Phone" value={form.userPhone} onChange={onChange}
                   />
                 </div>
 

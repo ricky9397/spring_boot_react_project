@@ -24,15 +24,23 @@ public class UserController {
 
         System.out.println(user);
 
-//        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-//        Long result = userService.register(user);
-//        if(result == 0){
-//            return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
-//        } else {
-//            return new ResponseEntity<>(result, HttpStatus.OK);
-//        }
+        try {
+            user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+            Long result = userService.register(user);
+            if(result == 0){
+                return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+        }catch (Exception e){
+            // 409 중복 에러코드 ( 에러 핸들러 작성시 수정 )
+            return new ResponseEntity<>(409, HttpStatus.CONFLICT);
+        }
 
-        return new ResponseEntity<>(1, HttpStatus.OK);
+
+
+
+//        return new ResponseEntity<>(2, HttpStatus.OK);
     }
 
 //    @PostMapping("/logins")
