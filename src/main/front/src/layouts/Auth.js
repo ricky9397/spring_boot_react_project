@@ -1,7 +1,7 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Cookies from "universal-cookie";
-
+import { useDispatch, useSelector } from 'react-redux';
 
 // img
 import img from "../assets/img/register_bg_2.png";
@@ -15,23 +15,53 @@ import Login from "views/auth/Login.js";
 import Register from "views/auth/Register.js";
 
 const initialState = {
-  token : null,
-  authenticated : false,
+  token: null,
+  authenticated: false,
 }
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_TOKEN':
-      return {...state, token : action.token, authenticated : action.result};
-    case 'DELETE_TOKEN' :
-      return {...state, token : null, authenticated : false }
+      return { ...state, token: action.token, authenticated: action.result };
+    case 'DELETE_TOKEN':
+      return { ...state, token: null, authenticated: false }
     default:
       return state;
   }
 }
 
 const Auth = () => {
+  const [error, setError] = useState(null);
 
+  const { form, auth, authError } = useSelector(({ auth }) => ({
+    form: auth.register,
+    auth: auth.auth,
+    authError: auth.authError,
+  }));
+
+  // 회원가입 성공 / 실패 처리
+  useEffect(() => {
+    if (authError) {
+      // 계정명이 이미 존재할 때
+      if (authError.response.status === 409) {
+        console.log("이밎 존재하는 계정명.")
+        setError('이미 존재하는 계정명입니다.');
+        return;
+      }
+      // 기타 이유
+      console.log("에러~~");
+      setError('회원가입 실패');
+      return;
+    }
+
+    if (auth) {
+      console.log('회원가입 성공');
+      console.log(auth);
+    }
+  }, [auth, authError]);
+
+
+  //======================================================== 로그인
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleLogin = (input) => {
@@ -43,7 +73,7 @@ const Auth = () => {
         token: input,
         result: true
       });
-      Cookies.set('refresh_token', input.refresh_token, { sameSite : 'strict' });
+      Cookies.set('refresh_token', input.refresh_token, { sameSite: 'strict' });
     } else {
       console.log("로그인 실패");
       dispatch({
@@ -65,7 +95,7 @@ const Auth = () => {
 
   useEffect(() => {
     window.addEventListener('storage', (e) => {
-      if(e.key === 'logout') {
+      if (e.key === 'logout') {
         console.log("로그아웃 감지");
         dispatch({
           type: 'DELETE_TOKEN'
@@ -73,7 +103,6 @@ const Auth = () => {
       }
     });
   }, []);
-
 
   return (
     <>
