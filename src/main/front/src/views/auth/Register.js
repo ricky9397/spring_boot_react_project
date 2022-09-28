@@ -6,13 +6,6 @@ import { changeField, initializeForm, register } from '../../modules/auth';
 // export default function Register() {
 const Register = () => {
 
-  const dispatch = useDispatch();
-
-  // 컴포넌트가 처음 렌더링 될 때 form 을 초기화함
-  useEffect(() => {
-    dispatch(initializeForm('register'));
-  }, [dispatch]);
-
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [userName, setUserName] = useState('');
@@ -21,6 +14,21 @@ const Register = () => {
 
   const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState(false);
+
+  const dispatch = useDispatch();
+
+  // 컴포넌트가 처음 렌더링 될 때 form 을 초기화함
+  useEffect(() => {
+    dispatch(initializeForm('register'));
+  }, [dispatch]);
+
+  // 이메일 정규식
+  const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+  // 비밀번호 정규식
+  const passwordRegEx = /^[A-Za-z0-9]{6,12}$/;
+  // 전화번호 정규식
+  const phoneRegExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
+  // 빈값 정규식
   const replaceRegExp = /\s/g;
 
   const target = (e) => {
@@ -35,27 +43,22 @@ const Register = () => {
   }
 
   const onEmailHandler = (e) => {
-    // 이메일 정규식
-    const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
-    // 공백 제거 
-    setUserEmail(e.currentTarget.value.replace(replaceRegExp, ''));
-    if (!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
-      setError(true); // disabled 처리하기 위한 error 로직
-    } else {
-      setError(false);
-    }
+    setUserEmail(e.currentTarget.value.replace(replaceRegExp, '')); // 공백 제거 
+    // if (!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
+    //   setError(true); // disabled 처리하기 위한 error 로직
+    // } else {
+    //   setError(false);
+    // }
     target(e);
   };
 
   const onPwHandler = (e) => {
-    // 비밀번호 정규식
-    const passwordRegEx = /^[A-Za-z0-9]{6,12}$/;
-    setUserPassword(e.currentTarget.value.replace(replaceRegExp, ''));
-    if (!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value === "") {
-      setError(true);
-    } else {
-      setError(false);
-    }
+    setUserPassword(e.currentTarget.value.replace(replaceRegExp, '')); // 공백 제거 
+    // if (!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value === "") {
+    //   setError(true);
+    // } else {
+    //   setError(false);
+    // }
     target(e);
   };
 
@@ -64,24 +67,21 @@ const Register = () => {
     target(e);
   };
   const onPhoneHandler = (e) => {
-    // 전화번호 정규식
-    const phoneRegExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
-    setUserPhone(e.currentTarget.value);
-    if (!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
-      setError(true);
-    } else {
-      setError(false);
-    }
+
+    setUserPhone(e.currentTarget.value.replace(replaceRegExp, ''));
+    // if (!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
+    //   setError(true);
+    // } else {
+    //   setError(false);
+    // }
     target(e);
   };
 
   // 체크박스 핸들러
   const onCheckHandler = (checked, name) => {
     if (checked) {
-      setError(false);
       setUserCheck('Y');
     } else {
-      setError(true);
       setUserCheck('N');
     }
     dispatch(
@@ -98,13 +98,35 @@ const Register = () => {
     setDisabled(!(userEmail && userName && userPhone && userYn && !error));
   }, [userEmail, userPassword, userPhone, userYn]);
 
+
+
+
   // submit!
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    /* valid 정규 식 버튼눌럿을때 이벤트 되도록 변경 해야 한다. */
+    if (!emailRegExp.test(userEmail)) {
+      setError("이메일형식이 잘못되었습니다.");
+      return false;
+    } 
+    if (!passwordRegEx.test(userPassword)) {
+      setError("비밀번호는 대소문자8자이상가능합니다.");
+      return false;
+    }
+    if (!phoneRegExp.test(userPhone)) {
+      setError("휴대폰입력이 잘못되었습니다.");
+      return false;
+    }
+    if([userEmail, userPassword, userName,userPhone].includes('')){
+      setError("빈 칸을 모두 입력하세요.");
+      return false;
+    }
+    if(userYn === "" || userYn === "N"){
+      setError("개인정보 보호정책에 동의해주세요.");
+      return false;
+    }
 
-
+    // 입력 데이터
     const data = {
       userEmail: userEmail,
       userPassword: userPassword,
@@ -166,7 +188,7 @@ const Register = () => {
                     이메일
                   </label>
                   <input
-                    type="email"
+                    type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     autoComplete="userEmail" name="userEmail" placeholder="Email" value={userEmail} onChange={onEmailHandler}
                   />
@@ -234,11 +256,13 @@ const Register = () => {
                     </span>
                   </label>
                 </div>
-
+                <div className="text-center mt-2">
+                <span className="text-red-500 text-sm font-semibold">{error}</span>
+                </div>
                 <div className="text-center mt-6">
                   <button
                     className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                    disabled={disabled} type="submit"
+                    type="submit"
                   >
                     회원가입
                   </button>
