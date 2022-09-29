@@ -6,7 +6,7 @@ const client = axios.create();
 // client.defaults.baseURL = 'http://localhost:8080';
 
 // 헤더 설정
-// client.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+client.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 
 // axios.interceptors.response.use(
 //     response => {
