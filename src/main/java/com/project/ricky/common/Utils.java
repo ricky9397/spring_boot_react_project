@@ -2,7 +2,7 @@ package com.project.ricky.common;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class utils {
+public class Utils {
 
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
