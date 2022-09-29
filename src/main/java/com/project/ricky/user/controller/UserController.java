@@ -28,7 +28,7 @@ public class UserController {
             user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
             Long result = userService.register(user);
             if(result == 0){
-                return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
+//                return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
             } else {
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
