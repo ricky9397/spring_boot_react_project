@@ -9,14 +9,8 @@ export const createRequestActionTypes = type => {
 
 export default function createRequestSaga(type, request) {
 
-    console.log("createRequest 시작");
-    console.log("request",request);
-    console.log("type========",type);
-
     const SUCCESS = `${type}_SUCCESS`;
     const FAILURE = `${type}_FAILURE`;
-
-    console.log(SUCCESS)
 
     return function* (action) {
 
@@ -26,6 +20,7 @@ export default function createRequestSaga(type, request) {
         yield put(startLoading(type)); // 로딩 시작
         try {
             const response = yield call(request, action.payload);
+            console.log("response---", response);
             yield put({
                 type: SUCCESS,
                 payload: response.data,
@@ -39,6 +34,7 @@ export default function createRequestSaga(type, request) {
                 error: true,
             });
         }
+        
         console.log("로딩끝");
 
         yield put(finishLoading(type)); // 로딩 끝

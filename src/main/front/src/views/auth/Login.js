@@ -1,46 +1,136 @@
-import axios from "axios";
-import React,{useState} from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { changeField, initializeForm, login } from '../../modules/auth';
 import { Link } from "react-router-dom";
+import { check } from '../../modules/user';
 
-const Login = ({handleLogin, history}) => {
+const Login = ({ handleLogin, history }) => {
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
+  // 에러처리
+  const [error, setError] = useState(false);
+
+  const dispatch = useDispatch();
+
+  // 이메일 정규식
+  const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+  // 비밀번호 정규식
+  const passwordRegEx = /^[A-Za-z0-9]{6,12}$/;
+  // 빈값 정규식
+  const replaceRegExp = /\s/g;
+
+  const target = (e) => {
+    const { value, name } = e.target;
+    dispatch(
+      changeField({
+        form: 'login',
+        key: name,
+        value,
+      }),
+    );
+  }
+
   const onEmailHandler = (e) => {
-    setUserEmail(e.currentTarget.value);
+    setUserEmail(e.currentTarget.value.replace(replaceRegExp, ''));
+    target(e);
   }
 
   const onPwHandler = (e) => {
-    setUserPassword(e.currentTarget.value);
+    setUserPassword(e.currentTarget.value.replace(replaceRegExp, ''));
+    target(e);
   }
 
-  const submit = async(e) =>{
+  const submit = async (e) => {
     e.preventDefault();
-    try {
-      const data = { 'userEmail' : userEmail, 'userPassword' : userPassword }
-      await axios.post("http://localhost:8080/auth/login", JSON.stringify(data) , {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true
-      }).then(res => {
-        if(res.status == 200){
-          const setToken = {
-            "auth_token" : res.headers.auth_token,
-            "refresh_token" : res.headers.refresh_token
-          }
-          handleLogin(setToken); // 토큰 발송
-          history.push("/"); // 로그인 성공 후 메인화면 이동.
-        } 
-      });
-      
-    } catch (e) {
-      console.log(e.message);
-      handleLogin("undefined");
+
+    if (!emailRegExp.test(userEmail)) {
+      setError("이메일형식이 잘못되었습니다.");
+      return false;
     }
+    if (!passwordRegEx.test(userPassword)) {
+      setError("비밀번호는 대소문자8자이상가능합니다.");
+      return false;
+    }
+    if ([userEmail, userPassword].includes('')) {
+      setError("빈 칸을 모두 입력하세요.");
+      return false;
+    }
+    // 입력 데이터
+    const data = {
+      userEmail: userEmail,
+      userPassword: userPassword,
+    }
+    // redux 서버 호출
+    dispatch(login(data));
+
+    // try {
+    //   const data = { 'userEmail' : userEmail, 'userPassword' : userPassword }
+    //   await axios.post("http://localhost:8080/auth/login", JSON.stringify(data) , {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     withCredentials: true
+    //   }).then(res => {
+    //     if(res.status == 200){
+    //       const setToken = {
+    //         "auth_token" : res.headers.auth_token,
+    //         "refresh_token" : res.headers.refresh_token
+    //       }
+    //       handleLogin(setToken); // 토큰 발송
+    //       history.push("/"); // 로그인 성공 후 메인화면 이동.
+    //     } 
+    //   });
+
+    // } catch (e) {
+    //   console.log(e.message);
+    //   handleLogin("undefined");
+    // }
   }
 
+  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
+    form: auth.login,
+    auth: auth.auth,
+    authError: auth.authError,
+    user: user.user,
+  }));
+
+  useEffect(() => {
+    if (authError) {
+      console.log('오류 발생');
+      console.log(authError);
+      setError('로그인 실패');
+      return;
+    }
+    if (auth) {
+      // if(auth.user.lockedYn === "Y"){
+      //   console.log("계정잠김");
+      //   setError('비밀번호 5회이상 틀렸습니다. 관리자에게 문의하세요.');
+      //   return false;
+      // }
+      console.log('로그인 성공');
+      console.log(auth.user)
+      const data = {
+        userName : auth.user.userName,
+        role : auth.user.role
+      }
+      dispatch(check(data));
+    }
+  }, [auth, authError, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      console.log("check API 성공");
+      console.log(user);
+      history.push("/");
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {
+        console.log('localStorage is not working');
+      }
+    } 
+  }, [user]);
 
   return (
     <>
@@ -93,9 +183,9 @@ const Login = ({handleLogin, history}) => {
                       이메일
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email" value={userEmail} onChange={onEmailHandler}
+                      autoComplete="userEmail" name="userEmail" placeholder="Email" value={userEmail} onChange={onEmailHandler}
                     />
                   </div>
 
@@ -109,7 +199,7 @@ const Login = ({handleLogin, history}) => {
                     <input
                       type="password"
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Password" value={userPassword} onChange={onPwHandler}
+                      autoComplete="userPassword" name="userPassword" placeholder="Password" value={userPassword} onChange={onPwHandler}
                     />
                   </div>
                   <div>
@@ -124,7 +214,9 @@ const Login = ({handleLogin, history}) => {
                       </span>
                     </label>
                   </div>
-
+                  <div className="text-center mt-2">
+                    <span className="text-red-500 text-sm font-semibold">{error}</span>
+                  </div>
                   <div className="text-center mt-6">
                     <button
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"

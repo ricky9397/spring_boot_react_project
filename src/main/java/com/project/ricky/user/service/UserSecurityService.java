@@ -1,6 +1,8 @@
 package com.project.ricky.user.service;
 
+import com.project.ricky.common.Utils;
 import com.project.ricky.user.repository.UserRepository;
+import com.project.ricky.user.vo.Authority;
 import com.project.ricky.user.vo.User;
 import com.project.ricky.user.vo.UserDetail;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service

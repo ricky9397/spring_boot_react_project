@@ -2,6 +2,7 @@ package com.project.ricky.common.Security.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.project.ricky.user.service.UserSecurityService;
 import com.project.ricky.user.vo.UserDetail;
 import lombok.SneakyThrows;
@@ -19,6 +20,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -78,6 +81,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("auth_token", JWTUtil.makeAuthToken(userDetail));
         response.setHeader("refresh_token", JWTUtil.makeRefreshToken(userDetail));
         logger.info("=======================토큰 발행 끝========================================");
+
         response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }

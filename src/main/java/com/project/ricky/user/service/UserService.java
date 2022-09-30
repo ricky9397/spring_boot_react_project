@@ -1,5 +1,6 @@
 package com.project.ricky.user.service;
 
+import com.project.ricky.common.Constants;
 import com.project.ricky.user.repository.UserRepository;
 import com.project.ricky.user.vo.User;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,17 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     public Long register(User user) throws Exception{
+        user.setLockedYn(Constants.NO);
+        user.setUseYn(Constants.YES);
+        user.setRole(Constants.ROLE_USER);
+        user.setModDate(Constants.MODDATE);
+        user.setLoginDate(Constants.LOGINDATE);
+        user.setRegDate(Constants.REGDATE);
         return userRepository.save(user).getUserId();
     }
 
     public Optional<User> login(User user) throws Exception {
         log.info("login ===================== {}" , user);
-//        Long result = userRepository.findByUserEmailAndUserPassword(user.getUserEmail(), user.getPassword());
         Optional<User> result = userRepository.findByUserEmail(user.getUserEmail());
         if(result != null){
             System.out.println("UserService 로그인 성공");
