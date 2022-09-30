@@ -4,17 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
 @Entity
 @Builder
-@DynamicInsert
+//@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_USER")
@@ -40,36 +44,35 @@ public class User{
     @Column(nullable = false)
     private String userPhone;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "userId"))
-    private Set<Authority> authorities;
-
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    private User admin;
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinColumn(foreignKey = @ForeignKey(name = "userId"))
+//    private Set<Authority> authorities;
 
     @Column(nullable = true)
-    private int loginCnt;
+    @ColumnDefault(value = "0")
+    private int loginFailCnt;
 
     @NotBlank
     @Column(nullable = false, length = 1)
     private String userYn;
 
-//    @Column(nullable = false, length = 1)
-//    @ColumnDefault("N")
-//    private String lockedYn;
+    @Column(nullable = false, length = 1)
+    @ColumnDefault(value = "N")
+    private String lockedYn;
 
-    @Column(nullable = true)
-    private String userNickName;
-
-//    private String regId;
-
-    @Column(updatable = false)
+    @CreatedDate
     private LocalDateTime regDate;
 
-//    private String modId;
-
+    @LastModifiedDate
     private LocalDateTime modDate;
 
-    private boolean enabled;
+    @CreatedDate
+    private LocalDateTime loginDate;
+
+    @ColumnDefault(value = "Y")
+    private String useYn;
+
+    @ColumnDefault(value = "ROLE_USER")
+    private String role;
 
 }

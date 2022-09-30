@@ -1,10 +1,11 @@
+// import { login } from "api/auth";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-// import { register } from "../../api/auth";
 import { changeField, initializeForm, register } from '../../modules/auth';
+import { check } from '../../modules/user';
 
 // export default function Register() {
-const Register = () => {
+const Register = ({history}) => {
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -12,15 +13,11 @@ const Register = () => {
   const [userPhone, setUserPhone] = useState('');
   const [userYn, setUserCheck] = useState('');
 
-  const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState(false);
 
   const dispatch = useDispatch();
 
-  // 컴포넌트가 처음 렌더링 될 때 form 을 초기화함
-  useEffect(() => {
-    dispatch(initializeForm('register'));
-  }, [dispatch]);
+   
 
   // 이메일 정규식
   const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
@@ -30,6 +27,11 @@ const Register = () => {
   const phoneRegExp = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;
   // 빈값 정규식
   const replaceRegExp = /\s/g;
+
+  // 컴포넌트가 처음 렌더링 될 때 form 을 초기화함
+  // useEffect(() => {
+  //   dispatch(initializeForm('register'));
+  // }, [dispatch]);
 
   const target = (e) => {
     const { value, name } = e.target;
@@ -42,43 +44,26 @@ const Register = () => {
     );
   }
 
-  const onEmailHandler = (e) => {
+  const onEmailHandler = (e) => { // 이메일
     setUserEmail(e.currentTarget.value.replace(replaceRegExp, '')); // 공백 제거 
-    // if (!emailRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
-    //   setError(true); // disabled 처리하기 위한 error 로직
-    // } else {
-    //   setError(false);
-    // }
     target(e);
   };
 
-  const onPwHandler = (e) => {
-    setUserPassword(e.currentTarget.value.replace(replaceRegExp, '')); // 공백 제거 
-    // if (!passwordRegEx.test(e.currentTarget.value) || e.currentTarget.value === "") {
-    //   setError(true);
-    // } else {
-    //   setError(false);
-    // }
+  const onPwHandler = (e) => { // 비밀번호
+    setUserPassword(e.currentTarget.value.replace(replaceRegExp, '')); 
     target(e);
   };
 
-  const onNameHanlder = (e) => {
-    setUserName(e.currentTarget.value);
+  const onNameHanlder = (e) => { // 이름
+    setUserName(e.currentTarget.value.replace(replaceRegExp, ''));
     target(e);
   };
-  const onPhoneHandler = (e) => {
-
+  const onPhoneHandler = (e) => { // 핸드폰
     setUserPhone(e.currentTarget.value.replace(replaceRegExp, ''));
-    // if (!phoneRegExp.test(e.currentTarget.value) || e.currentTarget.value === "") {
-    //   setError(true);
-    // } else {
-    //   setError(false);
-    // }
     target(e);
   };
 
-  // 체크박스 핸들러
-  const onCheckHandler = (checked, name) => {
+  const onCheckHandler = (checked, name) => { // 체크박스 핸들러
     if (checked) {
       setUserCheck('Y');
     } else {
@@ -93,14 +78,6 @@ const Register = () => {
     );
   }
 
-  // 회원가입 버튼 활성화 / 비활성화
-  useEffect(() => {
-    setDisabled(!(userEmail && userName && userPhone && userYn && !error));
-  }, [userEmail, userPassword, userPhone, userYn]);
-
-
-
-
   // submit!
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -108,7 +85,7 @@ const Register = () => {
     if (!emailRegExp.test(userEmail)) {
       setError("이메일형식이 잘못되었습니다.");
       return false;
-    } 
+    }
     if (!passwordRegEx.test(userPassword)) {
       setError("비밀번호는 대소문자8자이상가능합니다.");
       return false;
@@ -117,11 +94,11 @@ const Register = () => {
       setError("휴대폰입력이 잘못되었습니다.");
       return false;
     }
-    if([userEmail, userPassword, userName,userPhone].includes('')){
+    if ([userEmail, userPassword, userName, userPhone].includes('')) {
       setError("빈 칸을 모두 입력하세요.");
       return false;
     }
-    if(userYn === "" || userYn === "N"){
+    if (userYn === "" || userYn === "N") {
       setError("개인정보 보호정책에 동의해주세요.");
       return false;
     }
@@ -137,6 +114,53 @@ const Register = () => {
     // redux 서버 호출
     dispatch(register(data));
   }
+
+  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
+    form: auth.register,
+    auth: auth.auth,
+    authError: auth.authError,
+    user: user.user
+  }));
+
+  // 회원가입 성공 / 실패 처리
+  useEffect(() => {
+    if (authError) {
+      // 계정명이 이미 존재할 때
+      if (authError.response.status === 409) {
+        console.log("이미 존재하는 계정명.")
+        setError('이미 존재하는 계정명입니다.');
+        return;
+      }
+      // 기타 이유
+      console.log("에러~~");
+      setError('회원가입 실패');
+      return;
+    }
+
+    if (auth) {
+      console.log('회원가입 성공');
+      console.log(auth);
+      const data = {
+        userName : auth.user.userName,
+        role : auth.user.role
+      }
+      dispatch(check(data));
+    }
+  }, [auth, authError, dispatch]);
+
+  // user 값이 잘 설정되었는지 확인
+  useEffect(() => {
+    if (user) {
+      console.log('check API 성공');
+      console.log(user);
+      history.push("/");
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {
+        console.log('localStorage is not working');
+      }
+    }
+  }, [user]);
 
   return (
     <div className="container mx-auto px-4 h-full">
@@ -257,7 +281,7 @@ const Register = () => {
                   </label>
                 </div>
                 <div className="text-center mt-2">
-                <span className="text-red-500 text-sm font-semibold">{error}</span>
+                  <span className="text-red-500 text-sm font-semibold">{error}</span>
                 </div>
                 <div className="text-center mt-6">
                   <button
