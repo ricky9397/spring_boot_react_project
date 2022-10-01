@@ -1,5 +1,8 @@
 import { call, put } from 'redux-saga/effects';
 import { startLoading, finishLoading } from '../modules/loading';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies(); // 토큰을 담을 Cookies
 
 export const createRequestActionTypes = type => {
     const SUCCESS = `${type}_SUCCESS`;
@@ -20,7 +23,12 @@ export default function createRequestSaga(type, request) {
         yield put(startLoading(type)); // 로딩 시작
         try {
             const response = yield call(request, action.payload);
-            console.log("response---", response);
+            
+            if("auth/LOGIN_SUCCESS" === SUCCESS){
+                const refresh_token = response.headers.refresh_token;
+                cookies.set('refresh_token', refresh_token);
+            }
+
             yield put({
                 type: SUCCESS,
                 payload: response.data,

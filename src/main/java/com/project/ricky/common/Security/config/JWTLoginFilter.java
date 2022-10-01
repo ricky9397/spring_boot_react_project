@@ -44,8 +44,9 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     @SneakyThrows  // try, catch 역할 어너테이션
     @Override      // 통행증을 발급 받기 위한 메소드
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("=====================로그인 시도===================");
+        logger.info("############################로그인시도####################################");
         UserLogin userLogin = objectMapper.readValue(request.getInputStream(), UserLogin.class);
+
         if (userLogin.getRefreshToken() == null) {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userLogin.getUserEmail(), userLogin.getUserPassword(), null

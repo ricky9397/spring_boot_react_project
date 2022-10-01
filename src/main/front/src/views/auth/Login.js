@@ -110,7 +110,7 @@ const Login = ({ handleLogin, history }) => {
       //   return false;
       // }
       console.log('로그인 성공');
-      console.log(auth.user)
+      console.log(auth);
       const data = {
         userName : auth.user.userName,
         role : auth.user.role
