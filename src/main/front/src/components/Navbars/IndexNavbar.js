@@ -98,7 +98,7 @@ export default function Navbar() {
                     type="button" onClick={onLogout} 
                   >
                     <i className="fas fa-arrow-alt-circle-down text-xs py-1 px-2 font-bold w-full whitespace-nowrap bg-transparent text-white">
-                      <Link to="/auth/logout" onClick={onLogout}>
+                      <Link to="/auth/logout">
                         로그아웃
                       </Link>
                     </i>
