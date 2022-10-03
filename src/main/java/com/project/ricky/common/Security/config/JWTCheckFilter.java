@@ -27,13 +27,13 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
         this.userSecurityService = userSecurityService;
     }
 
-    // 인증이나 권한이 필여한 주소요청이 있을 때 해당 필터를 타게 됨.
-    @Override
+    @Override // 인증이나 권한이 필여한 주소요청이 있을 때 해당 필터를 타게 됨.
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
-        System.out.println("header======" + bearer);
+        logger.info("#####################################Token 체크 시작##########################################");
         // header가 있는지 확인
         if(bearer == null || !bearer.startsWith("Bearer ")){
+            logger.info("#####################Token 존재하지않음.####################################");
             chain.doFilter(request, response);
             return;
         }
@@ -41,13 +41,13 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
         String token = bearer.substring("Bearer ".length());
         VerifyResult result = JWTUtil.verify(token);
         if(result.isSuccess()){
+            logger.info("#####################Token 발급완료.####################################");
             UserDetail userDetail = (UserDetail) userSecurityService.loadUserByUsername(result.getUsername());
 
             // JWT 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 만들어 준다.
             UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(
                     userDetail.getUsername(), null, userDetail.getAuthorities()
             );
-            System.out.println(userToken);
             // 강제로 시큐리티의 세션에 접근하여 Authentication 객체를 저장.
             SecurityContextHolder.getContext().setAuthentication(userToken);
             chain.doFilter(request, response);

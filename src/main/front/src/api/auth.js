@@ -10,4 +10,6 @@ export const register = (data) => client.post('/auth/register', data);
 export const check = (data) => client.post('/auth/check', data);
 
 // 로그아웃
-export const logout = () => client.post('/auth/logout');
+// export const logout = () => client.get('/auth/logout');
+
+export const admin = () => client.get('/admin/dashboard');

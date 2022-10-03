@@ -15,17 +15,24 @@ export default function createRequestSaga(type, request) {
     const SUCCESS = `${type}_SUCCESS`;
     const FAILURE = `${type}_FAILURE`;
 
-    return function* (action) {
+    
+    
 
+    return function* (action) {
+        
         console.log("로딩시작");
         console.log("action====",action);
-        
+        console.log("SUCCESS",SUCCESS);
+        console.log("FAILURE",FAILURE);
         yield put(startLoading(type)); // 로딩 시작
         try {
             const response = yield call(request, action.payload);
             
+            // 로그인 성공 시 token 저장
             if("auth/LOGIN_SUCCESS" === SUCCESS){
+                const auth_token = response.headers.auth_token;
                 const refresh_token = response.headers.refresh_token;
+                cookies.set('auth_token', auth_token);
                 cookies.set('refresh_token', refresh_token);
             }
 
