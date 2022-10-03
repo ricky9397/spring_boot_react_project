@@ -40,7 +40,6 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         setFilterProcessesUrl("/auth/login");
     }
 
-
     @SneakyThrows  // try, catch 역할 어너테이션
     @Override      // 통행증을 발급 받기 위한 메소드
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

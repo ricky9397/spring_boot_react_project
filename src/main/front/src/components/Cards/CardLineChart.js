@@ -1,5 +1,8 @@
 import React from "react";
 import Chart from "chart.js";
+import axios from "axios";
+
+import * as authAPI from '../../api/auth';
 
 export default function CardLineChart() {
   React.useEffect(() => {
@@ -106,6 +109,19 @@ export default function CardLineChart() {
     var ctx = document.getElementById("line-chart").getContext("2d");
     window.myLine = new Chart(ctx, config);
   }, []);
+
+
+  const onChange = () => {
+   
+    try {
+      authAPI.admin();
+
+    } catch (e) {
+      console.log(e);
+    }
+
+  }
+
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded bg-blueGray-700">
@@ -113,7 +129,7 @@ export default function CardLineChart() {
           <div className="flex flex-wrap items-center">
             <div className="relative w-full max-w-full flex-grow flex-1">
               <h6 className="uppercase text-blueGray-100 mb-1 text-xs font-semibold">
-                Overview
+                <button onClick={onChange}>Overview</button>
               </h6>
               <h2 className="text-white text-xl font-semibold">Sales value</h2>
             </div>

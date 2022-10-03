@@ -34,25 +34,7 @@ public class UserController {
             // 409 중복 에러코드 ( 에러 핸들러 작성시 수정 )
             return new ResponseEntity<>(409, HttpStatus.CONFLICT);
         }
-
-//        return new ResponseEntity<>(2, HttpStatus.OK);
     }
-
-//    @PostMapping("/logins")
-//    public ResponseEntity<?> login(@RequestBody User user) throws Exception {
-//        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-//        System.out.println("user =============== " + user);
-//
-////        Optional<User> result = userService.login(user);
-//        Optional<User> result = userService.login(user);
-//        if(result != null){
-//            System.out.println("성공");
-//        } else {
-//            System.out.println("실패");
-//        }
-//        System.out.println("예????????");
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
 
     @PostMapping("/check")
     public ResponseEntity<?> getSuccessCheck(@RequestBody User user) throws Exception {
@@ -61,11 +43,6 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() throws Exception {
-        return new ResponseEntity<>("로그아웃", HttpStatus.OK); 
     }
 
 }

@@ -121,7 +121,7 @@ const Login = ({ handleLogin, history }) => {
 
   useEffect(() => {
     if (user) {
-      console.log("check API 성공");
+      console.log("check 로그인 성공");
       console.log(user);
       history.push("/");
       try {

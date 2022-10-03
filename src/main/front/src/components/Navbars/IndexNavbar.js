@@ -1,19 +1,25 @@
 /*eslint-disable*/
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import { logout } from '../../modules/user';
 // components
 
+
 import IndexDropdown from "components/Dropdowns/IndexDropdown.js";
+import Cookies from "universal-cookie";
 
 export default function Navbar() {
+  const cookies = new Cookies();
 
   const { user } = useSelector(({ user }) => ({ user: user.user }));
 
-  const dispatch = useDispatch();
   const onLogout = () => {
-    dispatch(logout());
+    localStorage.removeItem('user'); // localStorage 에서 user 제거
+    cookies.remove('auth_token');
+    cookies.remove('refresh_token');
+    location.reload();
+    // dispatch(logout());
   };
 
   const [navbarOpen, setNavbarOpen] = React.useState(false);
@@ -95,27 +101,26 @@ export default function Navbar() {
                 {user ? (
                   <button
                     className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                    type="button" onClick={onLogout} 
-                  >
-                    <i className="fas fa-arrow-alt-circle-down text-xs py-1 px-2 font-bold w-full whitespace-nowrap bg-transparent text-white">
-                      <Link to="/auth/logout">
-                        로그아웃
-                      </Link>
-                    </i>
-                    {/* <i className="fas fa-arrow-alt-circle-down"></i> 로그인 */}
+                    type="button" onClick={onLogout} >
+                    <i className="fas fa-arrow-alt-circle-down"></i> 로그아웃
                   </button>
                 ) : (
-                  <button
-                    className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                    type="button" 
-                  >
-                    <i className="fas fa-arrow-alt-circle-down text-xs py-1 px-2 font-bold w-full whitespace-nowrap bg-transparent text-white">
-                      <Link to="/auth/login">
-                        로그인
-                      </Link>
-                    </i>
-                    {/* <i className="fas fa-arrow-alt-circle-down"></i> 로그인 */}
-                  </button>
+                  <div>
+                  <Link to="/auth/login">
+                    <button
+                      className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                      type="button" >
+                      <i className="fas fa-arrow-alt-circle-down"></i>로그인
+                    </button>
+                  </Link>
+                  <Link to="/auth/register">
+                    <button
+                      className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                      type="button" >
+                      <i className="fas fa-arrow-alt-circle-down"></i>회원가입
+                    </button>
+                  </Link>
+                  </div>
                 )}
               </li>
             </ul>
