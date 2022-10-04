@@ -13,3 +13,5 @@ export const check = (data) => client.post('/auth/check', data);
 // export const logout = () => client.get('/auth/logout');
 
 export const admin = () => client.get('/admin/dashboard');
+
+export const getToken = () => client.post('/JWT/getToken');

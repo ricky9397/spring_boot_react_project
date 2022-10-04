@@ -71,10 +71,10 @@ export default handleActions(
       user: null,
       checkError: error,
     }),
-    // [LOGOUT]: state => ({
-    //   ...state,
-    //   user: null,
-    // }),
+    [LOGOUT]: state => ({
+      ...state,
+      user: null,
+    }),
   },
   initialState,
 );

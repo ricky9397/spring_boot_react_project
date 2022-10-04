@@ -1,6 +1,7 @@
 package com.project.ricky.common.Security.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.project.ricky.common.utils.Constants;
 import com.project.ricky.user.service.UserSecurityService;
 import com.project.ricky.user.vo.UserDetail;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,8 @@ import java.io.IOException;
 public class JWTCheckFilter extends BasicAuthenticationFilter {
 
     private final UserSecurityService userSecurityService;
+
+
     public JWTCheckFilter(AuthenticationManager authenticationManager, UserSecurityService userSecurityService) {
         super(authenticationManager);
         this.userSecurityService = userSecurityService;
@@ -29,18 +32,19 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
 
     @Override // 인증이나 권한이 필여한 주소요청이 있을 때 해당 필터를 타게 됨.
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String authToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String refresh_token = request.getHeader(Constants.REFRESH_TOKEN);
+
         logger.info("#####################################Token 체크 시작##########################################");
         // header가 있는지 확인
-        if(bearer == null || !bearer.startsWith("Bearer ")){
-            logger.info("#####################Token 존재하지않음.####################################");
+        if (authToken == null || !authToken.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
         // JWT 토큰을 검증을 해서 정상적인 사용자인지 확인
-        String token = bearer.substring("Bearer ".length());
+        String token = authToken.substring("Bearer ".length());
         VerifyResult result = JWTUtil.verify(token);
-        if(result.isSuccess()){
+        if (result.isSuccess()) { // header로 받은 authToken을 verify 체크 후 만료되었을경우 false
             logger.info("#####################Token 발급완료.####################################");
             UserDetail userDetail = (UserDetail) userSecurityService.loadUserByUsername(result.getUsername());
 
@@ -51,8 +55,14 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             // 강제로 시큐리티의 세션에 접근하여 Authentication 객체를 저장.
             SecurityContextHolder.getContext().setAuthentication(userToken);
             chain.doFilter(request, response);
-        }else{
-            throw new TokenExpiredException("Token is not valid");
+        } else {
+
+            // 1. auth토큰 만료 후 DB에 저장되어 있는 refresh_token을 조회
+            // 2. 현재 로그인된 사용자 refresh_token과 DB에 조회된 refresh_token 값이 맞으면 auth_token 재발급
+            // 3. auth_token + refresh_token 이 둘다 만료 되었을 경우 에러를 던져 강제 로그아웃 실행.
+            // 4. 로직 구현 해야함. ( Exception 핸들러 + LogUtil 구현해야함 )
+
+            throw new TokenExpiredException("401");
         }
     }
 }

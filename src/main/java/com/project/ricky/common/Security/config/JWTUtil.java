@@ -13,7 +13,7 @@ import java.util.Date;
 public class JWTUtil {
 
     private static final Algorithm ALGORITHM = Algorithm.HMAC256("ricky");
-    private static final long AUTH_TIME = 2;
+    private static final long AUTH_TIME = 10;
     private static final long REFRESH_TIME = 60*60*24*7; // 7일
 
     public static String makeAuthToken(UserDetail userDetail) { // AuthToken 토큰발행
