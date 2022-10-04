@@ -15,9 +15,10 @@ export default function Navbar() {
   const { user } = useSelector(({ user }) => ({ user: user.user }));
 
   const onLogout = () => {
-    localStorage.removeItem('user'); // localStorage 에서 user 제거
     cookies.remove('auth_token');
     cookies.remove('refresh_token');
+    localStorage.removeItem('user'); // localStorage 에서 user 제거
+    
     location.reload();
     // dispatch(logout());
   };

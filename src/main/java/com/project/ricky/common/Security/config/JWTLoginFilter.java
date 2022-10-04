@@ -2,7 +2,7 @@ package com.project.ricky.common.Security.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.project.ricky.common.utils.Constants;
 import com.project.ricky.user.service.UserSecurityService;
 import com.project.ricky.user.vo.UserDetail;
 import lombok.SneakyThrows;
@@ -20,8 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -77,10 +75,12 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         UserDetail userDetail = (UserDetail) authResult.getPrincipal(); // 성공한 유저정보를 UserDetail객체에 담는다.
 
-        logger.info("=======================토큰 발행 시작=======================================");
-        response.setHeader("auth_token", JWTUtil.makeAuthToken(userDetail));
-        response.setHeader("refresh_token", JWTUtil.makeRefreshToken(userDetail));
-        logger.info("=======================토큰 발행 끝========================================");
+        String refreshToken = JWTUtil.makeRefreshToken(userDetail);
+
+        userSecurityService.updateRefreshToken(refreshToken, userDetail.getUser().getUserId()); // 로그인 성공 후 토큰 DB저장.
+
+        response.setHeader(Constants.REFRESH_TOKEN, refreshToken);
+        response.setHeader(Constants.AUTH_TOKEN, JWTUtil.makeAuthToken(userDetail));
 
         response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -93,9 +93,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException failed) throws IOException, ServletException {
-        System.out.println("===================================================2");
+        System.out.println("===================================================로그인실패");
         super.unsuccessfulAuthentication(request, response, failed);
     }
-
 
 }

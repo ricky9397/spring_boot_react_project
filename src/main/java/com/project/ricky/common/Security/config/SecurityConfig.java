@@ -24,7 +24,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserSecurityService userSecurityService;
-
     private final CorsConfig corsConfig;
 
     @Bean // bean 은 해당 메서드의 리턴되는 오브젝트를 Ioc 로 등록해준다.
@@ -70,21 +69,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/admin/**").hasAuthority("ROLE_USER")
                             .antMatchers("/error").permitAll()
                     ;
+                })
+                .rememberMe(config -> {
+                    config.rememberMeServices(rememberMeServices())
+                    ;
+                })
+                .exceptionHandling(exception -> {
+                    exception.accessDeniedPage("/access-denied");
                 });
-//                .rememberMe(config -> {
-//                    config.rememberMeServices(rememberMeServices())
-//                    ;
-//                })
-//                .exceptionHandling(exception -> {
-//                    exception.accessDeniedPage("/access-denied");
-//                })
-                }
-
-
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring()
-//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-//    }
-
     }
+
+}

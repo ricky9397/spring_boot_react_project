@@ -1,4 +1,4 @@
-package com.project.ricky.common;
+package com.project.ricky.common.utils;
 
 import javax.persistence.Column;
 import java.time.LocalDateTime;
@@ -13,7 +13,8 @@ public class Constants {
     public static final String YES = "Y";
     public static final String NO = "N";
 
-
+    public static final String REFRESH_TOKEN = "refresh_token";
+    public static final String AUTH_TOKEN = "auth_token";
 
 
 }

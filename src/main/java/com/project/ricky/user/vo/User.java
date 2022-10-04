@@ -5,20 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @Entity
 @Builder
 //@DynamicInsert
+//@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_USER")
@@ -74,5 +72,7 @@ public class User{
 
     @ColumnDefault(value = "ROLE_USER")
     private String role;
+
+    private String refreshToken;
 
 }

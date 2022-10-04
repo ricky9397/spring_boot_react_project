@@ -1,4 +1,4 @@
-package com.project.ricky.common;
+package com.project.ricky.common.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
