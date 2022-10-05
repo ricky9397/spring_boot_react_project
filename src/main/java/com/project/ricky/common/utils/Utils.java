@@ -26,7 +26,6 @@ public class Utils {
         return ip;
     }
 
-
     /**
      * Object null, 공백 체크
      * @param obj
