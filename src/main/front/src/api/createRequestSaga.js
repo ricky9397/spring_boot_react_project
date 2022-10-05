@@ -27,15 +27,6 @@ export default function createRequestSaga(type, request) {
         yield put(startLoading(type)); // 로딩 시작
         try {
             const response = yield call(request, action.payload);
-            
-            // 로그인 성공 시 token 저장
-            if("auth/LOGIN_SUCCESS" === SUCCESS){
-                const auth_token = response.headers.auth_token;
-                const refresh_token = response.headers.refresh_token;
-                cookies.set('auth_token', auth_token);
-                cookies.set('refresh_token', refresh_token);
-            }
-
             yield put({
                 type: SUCCESS,
                 payload: response.data,
