@@ -32,7 +32,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
 
     @Override // 인증이나 권한이 필여한 주소요청이 있을 때 해당 필터를 타게 됨.
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String authToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String authToken = request.getHeader(Constants.AUTH_TOKEN);
         String refresh_token = request.getHeader(Constants.REFRESH_TOKEN);
 
         logger.info("#####################################Token 체크 시작##########################################");
@@ -61,9 +61,6 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             // 2. 현재 로그인된 사용자 refresh_token과 DB에 조회된 refresh_token 값이 맞으면 auth_token 재발급
             // 3. auth_token + refresh_token 이 둘다 만료 되었을 경우 에러를 던져 강제 로그아웃 실행.
             // 4. 로직 구현 해야함. ( Exception 핸들러 + LogUtil 구현해야함 )
-
-
-            
 
             throw new TokenExpiredException("401");
         }
