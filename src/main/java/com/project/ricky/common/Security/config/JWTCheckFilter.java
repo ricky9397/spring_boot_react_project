@@ -62,6 +62,9 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             // 3. auth_token + refresh_token 이 둘다 만료 되었을 경우 에러를 던져 강제 로그아웃 실행.
             // 4. 로직 구현 해야함. ( Exception 핸들러 + LogUtil 구현해야함 )
 
+
+            
+
             throw new TokenExpiredException("401");
         }
     }
