@@ -1,6 +1,7 @@
 package com.project.ricky.common.Security.config;
 
 import com.project.ricky.common.config.CorsConfig;
+import com.project.ricky.common.jwt.JwtAuthenticationEntryPoint;
 import com.project.ricky.user.service.UserSecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // secured 어노테이션 활성화, preAuthorize 어노테이션 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final UserSecurityService userSecurityService;
     private final CorsConfig corsConfig;
 
@@ -67,16 +69,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/auth/**").permitAll()
 //                            .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                             .antMatchers("/admin/**").hasAuthority("ROLE_USER")
-                            .antMatchers("/error").permitAll()
+//                            .antMatchers("/error").permitAll()
                     ;
                 })
                 .rememberMe(config -> {
                     config.rememberMeServices(rememberMeServices())
                     ;
                 })
-                .exceptionHandling(exception -> {
-                    exception.accessDeniedPage("/access-denied");
-                });
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+//                .exceptionHandling(exception -> {
+//                    exception.accessDeniedPage("/access-denied");
+//                });
     }
 
 }

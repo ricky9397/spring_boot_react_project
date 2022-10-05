@@ -1,10 +1,12 @@
 package com.project.ricky.common.Security.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.project.ricky.common.exception.BadRequestException;
 import com.project.ricky.common.utils.Constants;
 import com.project.ricky.user.service.UserSecurityService;
 import com.project.ricky.user.vo.UserDetail;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,10 +33,8 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
     }
 
     @Override // 인증이나 권한이 필여한 주소요청이 있을 때 해당 필터를 타게 됨.
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, BadRequestException{
         String authToken = request.getHeader(Constants.AUTH_TOKEN);
-        String refresh_token = request.getHeader(Constants.REFRESH_TOKEN);
-
         logger.info("#####################################Token 체크 시작##########################################");
         // header가 있는지 확인
         if (authToken == null || !authToken.startsWith("Bearer ")) {
@@ -61,8 +61,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             // 2. 현재 로그인된 사용자 refresh_token과 DB에 조회된 refresh_token 값이 맞으면 auth_token 재발급
             // 3. auth_token + refresh_token 이 둘다 만료 되었을 경우 에러를 던져 강제 로그아웃 실행.
             // 4. 로직 구현 해야함. ( Exception 핸들러 + LogUtil 구현해야함 )
-
-            throw new TokenExpiredException("401");
+            throw new BadRequestException("401", HttpStatus.UNAUTHORIZED);
         }
     }
 }

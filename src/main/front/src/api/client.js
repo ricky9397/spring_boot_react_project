@@ -9,44 +9,49 @@ const client = axios.create();
 
 const cookies = new Cookies();
 
-const auth_token = cookies.get('auth_token');
-const refresh_token = cookies.get('refresh_token');
+// const auth_token = cookies.get('auth_token');
+// const refresh_token = cookies.get('refresh_token');
 
 // 헤더 설정
-client.defaults.headers.common['auth_token'] = auth_token ? 'Bearer ' + auth_token : null;
-client.defaults.headers.common['refresh_token'] = refresh_token ? 'Bearer ' + refresh_token : null;
+// client.defaults.headers.common['auth_token'] = auth_token ? 'Bearer ' + auth_token : null;
+// client.defaults.headers.common['refresh_token'] = refresh_token ? 'Bearer ' + refresh_token : null;
 
-// client.interceptors.request.use(
-//     function (config) {
-//         console.log(config);
-//         const token1 = cookies.get('auth_token');
-//         const token2 = cookies.get('refresh_token');
-//         // if (!token1 && !token2) {
-//         //     config.headers['auth_token'] = null;
-//         //     config.headers['refresh_token'] = null;
-//         // }
-//         // config.headers['auth_token'] = 'Bearer '+token1;
-//         // config.headers['refresh_token'] = 'Bearer '+token2;
-//     }
-// )
+// Request Interceptor 헤더 정보
+client.interceptors.request.use(
+    async config => {
+        const token1 = cookies.get('auth_token');
+        if (!token1) {
+            config.headers['auth_token'] = null;
+        }
+        config.headers['auth_token'] = 'Bearer '+token1;
+        console.log("config=============",config);
+        return config;
+    },
+    error => {
+        Promise.reject(error);
+    }
+)
 
 
 client.interceptors.response.use(
     response => {
-        console.log("interceptors.response", response);
+        console.log("interceptors.response=====", response);
+
         if (response.config.url === "/auth/login") {
             cookies.set('auth_token', response.headers.auth_token);
             cookies.set('refresh_token', response.headers.refresh_token);
         }
+
         return response;
     },
-    error => {
-
-        console.log(error.request.responseURL);
-        console.log("인터셉터 오류 ", error);
-
+    async error => {
+        const originalRequest = error.config;
+        console.log('originalRequest======',error.response.status );
+        console.log(error);
+        // console.log('originalRequest._retry',originalRequest._retry);
         if (error.response.data.message === "401") {
-            // 토큰 만료시 인터셉터사용하여 token 발행받아온다.    
+            // originalRequest.headers['auth_token']
+            
         }
 
         return Promise.reject(error);
