@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ricky.common.utils.Constants;
 import com.project.ricky.user.service.UserSecurityService;
+import com.project.ricky.user.vo.User;
 import com.project.ricky.user.vo.UserDetail;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
@@ -43,8 +44,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         logger.info("############################로그인시도####################################");
         UserLogin userLogin = objectMapper.readValue(request.getInputStream(), UserLogin.class);
-
-        if (userLogin.getRefreshToken() == null) {
+        String refreshToken = request.getHeader(Constants.REFRESH_TOKEN);
+        if (refreshToken == null) {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userLogin.getUserEmail(), userLogin.getUserPassword(), null
             );
@@ -52,18 +53,30 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             // 2. UserDetailsService 의 사용자가 있으면 권한부여 받고 -> successfulAuthentication()로 호출한다.
             return authenticationManager.authenticate(authToken);
         } else {
-            VerifyResult verify = JWTUtil.verify(userLogin.getRefreshToken());
-            if (verify.isSuccess()) { // 유효한토큰일 경우..
-                UserDetail userDetail = (UserDetail) userSecurityService.loadUserByUsername(verify.getUsername());
-                return new UsernamePasswordAuthenticationToken(
-                        userDetail, userDetail.getAuthorities()
-                );
-            } else { // 유효하지않다면 Exception
-                throw new TokenExpiredException("refresh token expired");
+
+            VerifyResult verify = JWTUtil.verify(refreshToken);
+
+            // 토큰기간이 유효한 경우...
+            if (verify.isSuccess()) {
+
+                // DB에 담긴 토큰을 가져온다.
+                User user = userSecurityService.findByRefreshToken(userLogin.getUserId());
+
+                // DB에 담긴토큰과 받아온 토큰이 일치하면 auth 토큰을 재갱신 해준다.
+                if (!user.getRefreshToken().isEmpty() && user.getRefreshToken().equals(refreshToken)) {
+
+                    UserDetail userDetail = (UserDetail) userSecurityService.loadUserByUsername(verify.getUsername());
+                    return new UsernamePasswordAuthenticationToken(userDetail, userDetail.getAuthorities());
+
+                } else {
+                    throw new TokenExpiredException("402"); // 토큰발급 오류
+                }
+            } else {
+                // 리플래쉬 토큰이 유효 하지 않다면 Exception ... 로그아웃
+                throw new TokenExpiredException("403");
             }
         }
 //                .rememberme(request.getParameter("remember-me") != null)
-
     }
 
     @Override
@@ -85,8 +98,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
-    
-    
+
+
     // 로그인 실패시 처리
     @Override
     protected void unsuccessfulAuthentication(

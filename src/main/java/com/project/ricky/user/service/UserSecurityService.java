@@ -27,4 +27,7 @@ public class UserSecurityService implements UserDetailsService {
         userRepository.update(refreshToken, userId); // 리플래쉬토큰 저장
     }
 
+    public User findByRefreshToken(Long userId) {
+        return userRepository.findByRefreshToken(userId);
+    }
 }

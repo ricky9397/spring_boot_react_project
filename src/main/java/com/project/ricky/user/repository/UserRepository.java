@@ -17,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "UPDATE TB_USER SET refreshToken = :refreshToken where userId = :userId", nativeQuery = true)
     void update(@Param(value = "refreshToken") String refreshToken, @Param(value = "userId") Long userId);
 
+
+    @Query(value = "SELECT * FROM TB_USER WHERE userId = :userId", nativeQuery = true)
+    User findByRefreshToken(@Param("userId") Long userId);
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import Cookies from "universal-cookie";
-import * as authAPI from '../api/auth';
+import { useHistory } from "react-router-dom";
+
 
 const client = axios.create();
 
@@ -19,12 +20,12 @@ const cookies = new Cookies();
 // Request Interceptor 헤더 정보
 client.interceptors.request.use(
     async config => {
-        const token1 = cookies.get('auth_token');
-        if (!token1) {
+        const token = cookies.get('auth_token');
+        if (!token) {
             config.headers['auth_token'] = null;
         }
-        config.headers['auth_token'] = 'Bearer '+token1;
-        console.log("config=============",config);
+        config.headers['auth_token'] = 'Bearer ' + token;
+        console.log("============================config", config);
         return config;
     },
     error => {
@@ -38,6 +39,10 @@ client.interceptors.response.use(
         console.log("interceptors.response=====", response);
 
         if (response.config.url === "/auth/login") {
+            
+            cookies.remove('auth_token');
+            cookies.remove('refresh_token');
+
             cookies.set('auth_token', response.headers.auth_token);
             cookies.set('refresh_token', response.headers.refresh_token);
         }
@@ -45,15 +50,39 @@ client.interceptors.response.use(
         return response;
     },
     async error => {
+        const history = useHistory();
         const originalRequest = error.config;
-        console.log('originalRequest======',error.response.status );
+        console.log('originalRequest======', error.response.status);
         console.log(error);
-        // console.log('originalRequest._retry',originalRequest._retry);
-        if (error.response.data.message === "401") {
-            // originalRequest.headers['auth_token']
-            
-        }
+        if (originalRequest.url != "/auth/login") {
+            if (error.response.data.message === "401") {
 
+                const user = localStorage.getItem("user");
+                const obj = JSON.parse(user);
+                try {
+                    const rs = await client.post("/auth/login", {
+                        userId: obj.userId,
+                    }, {
+                        headers: {
+                            "refresh_token": cookies.get('refresh_token')
+                        }
+                    });
+                } catch (e) {
+                    console.log("토큰발급에러 : ", e);
+                }
+            } else if (error.response.data.message === "402") {
+                console.log("토큰 발급 에러");
+            } else if (error.response.data.message === "403") {
+
+                cookies.remove('auth_token');
+                cookies.remove('refresh_token');
+
+                localStorage.removeItem('user'); // localStorage 에서 user 제거
+
+                history.push("/");
+
+            }
+        }
         return Promise.reject(error);
     }
 )
