@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { changeField, initializeForm, login } from '../../modules/auth';
+import { authSaga, changeField, initializeForm, login } from '../../modules/auth';
 import { Link } from "react-router-dom";
 import { check } from '../../modules/user';
 
@@ -112,6 +112,7 @@ const Login = ({ handleLogin, history }) => {
       console.log('로그인 성공');
       console.log(auth);
       const data = {
+        userId : auth.user.userId,
         userName : auth.user.userName,
         role : auth.user.role
       }
