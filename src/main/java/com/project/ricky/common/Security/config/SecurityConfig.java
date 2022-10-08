@@ -45,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         rememberMeServices.setParameter("remember-me");
         rememberMeServices.setAlwaysRemember(true);
         rememberMeServices.setTokenValiditySeconds(3600);
-
         return rememberMeServices;
     }
 
@@ -73,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe(config -> {
                     config.rememberMeServices(rememberMeServices())
                     ;
-                });
+                }).oauth2Login()
+        ;
 //                .exceptionHandling(exception -> {
 //                    exception.accessDeniedPage("/access-denied");
 //                });

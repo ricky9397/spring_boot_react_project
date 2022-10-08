@@ -112,9 +112,9 @@ const Login = ({ handleLogin, history }) => {
       console.log('로그인 성공');
       console.log(auth);
       const data = {
-        userId : auth.user.userId,
-        userName : auth.user.userName,
-        role : auth.user.role
+        userId: auth.user.userId,
+        userName: auth.user.userName,
+        role: auth.user.role
       }
       dispatch(check(data));
     }
@@ -130,8 +130,12 @@ const Login = ({ handleLogin, history }) => {
       } catch (e) {
         console.log('localStorage is not working');
       }
-    } 
+    }
   }, [user]);
+
+  const googleAction = () => {
+    window.location.href = "http://localhost:8080/auth/login/oauth2/code/google";
+  };
 
   return (
     <>
@@ -159,7 +163,7 @@ const Login = ({ handleLogin, history }) => {
                   </button>
                   <button
                     className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
-                    type="button"
+                    type="button" onClick={googleAction}
                   >
                     <img
                       alt="..."

@@ -6,6 +6,11 @@ import java.util.Map;
 
 public class Utils {
 
+    /**+
+     * IP 공통
+     * @param request
+     * @return
+     */
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -27,7 +32,7 @@ public class Utils {
     }
 
     /**
-     * Object null, 공백 체크
+     * Object null, 공백 체크 공통
      * @param obj
      * @return
      */
