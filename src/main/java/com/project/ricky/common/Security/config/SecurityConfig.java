@@ -72,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe(config -> {
                     config.rememberMeServices(rememberMeServices())
                     ;
-                }).oauth2Login()
+                })
         ;
 //                .exceptionHandling(exception -> {
 //                    exception.accessDeniedPage("/access-denied");

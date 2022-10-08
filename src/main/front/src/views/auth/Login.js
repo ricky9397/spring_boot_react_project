@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { authSaga, changeField, initializeForm, login } from '../../modules/auth';
+import { GoogleLogin } from "react-google-login";
 import { Link } from "react-router-dom";
 import { check } from '../../modules/user';
 
-const Login = ({ handleLogin, history }) => {
+const googleClientId = "596950358351-5016avddl8fq2n4toiqirm1a2akk1pth.apps.googleusercontent.com";
 
+const Login = ({ handleLogin, history }) => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
@@ -133,9 +135,11 @@ const Login = ({ handleLogin, history }) => {
     }
   }, [user]);
 
-  const googleAction = () => {
-    window.location.href = "http://localhost:8080/auth/login/oauth2/code/google";
+  const responseGoogle = async (response) => {
+    console.log(1, response);
+    
   };
+  
 
   return (
     <>
@@ -161,7 +165,13 @@ const Login = ({ handleLogin, history }) => {
                     />
                     Github
                   </button>
-                  <button
+                  <GoogleLogin className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
+                    clientId={googleClientId}
+                    buttonText="Google"
+                    onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
+                  />
+                  {/* <button
                     className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
                     type="button" onClick={googleAction}
                   >
@@ -171,7 +181,8 @@ const Login = ({ handleLogin, history }) => {
                       src={require("assets/img/google.svg").default}
                     />
                     Google
-                  </button>
+                  </button> */}
+
                 </div>
                 <hr className="mt-6 border-b-1 border-blueGray-300" />
               </div>
