@@ -1,4 +1,4 @@
-package com.project.ricky.user.vo;
+package com.project.ricky.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

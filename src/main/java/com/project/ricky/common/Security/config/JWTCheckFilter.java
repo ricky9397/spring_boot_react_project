@@ -4,10 +4,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ricky.common.utils.Constants;
 import com.project.ricky.user.service.UserSecurityService;
-import com.project.ricky.user.vo.User;
-import com.project.ricky.user.vo.UserDetail;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.project.ricky.user.dto.UserDetail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 
 // 1.인증요청이 있을때 요청하는 것이 아님..
 // 2.시큐리티가 filter 가지고 있는데 그 필터중에 BasicAuthenticationFilter 라는 것이 있다.

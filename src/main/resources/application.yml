@@ -33,3 +33,6 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     generate-ddl: true
+
+jwt:
+  secret: 12345678901234567890123456789012

@@ -2,7 +2,7 @@ package com.project.ricky.user.controller;
 
 import com.project.ricky.common.utils.Utils;
 import com.project.ricky.user.service.UserService;
-import com.project.ricky.user.vo.User;
+import com.project.ricky.user.dto.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,8 @@
 package com.project.ricky.user.service;
 
 import com.project.ricky.user.repository.UserRepository;
-import com.project.ricky.user.vo.User;
-import com.project.ricky.user.vo.UserDetail;
+import com.project.ricky.user.dto.User;
+import com.project.ricky.user.dto.UserDetail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

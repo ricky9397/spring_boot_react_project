@@ -2,7 +2,7 @@ package com.project.ricky.user.service;
 
 import com.project.ricky.common.utils.Constants;
 import com.project.ricky.user.repository.UserRepository;
-import com.project.ricky.user.vo.User;
+import com.project.ricky.user.dto.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
