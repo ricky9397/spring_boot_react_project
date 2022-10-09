@@ -45,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         rememberMeServices.setParameter("remember-me");
         rememberMeServices.setAlwaysRemember(true);
         rememberMeServices.setTokenValiditySeconds(3600);
-
         return rememberMeServices;
     }
 
@@ -55,8 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager(), userSecurityService);
         http
                 .addFilter(corsConfig.corsFilter()) // 시큐리티 cors
-                .csrf().disable()                   // csrf 보안 설정을 비활성화한다.
-                .cors()                             // 화면 cors
+                .csrf().ignoringAntMatchers("/oauth2/login/**") // /oauth2/login/** 구글,네이버등 로그인 제외
+                .disable() // csrf 보안 설정을 비활성화한다.
+                .cors() // 화면 cors
                 .and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 시큐리티 세션을 사용하지 않음.
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class) // 로그인처리필터
@@ -67,13 +67,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/auth/**").permitAll()
 //                            .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                             .antMatchers("/admin/**").hasAuthority("ROLE_USER")
+                            .antMatchers("/oauth2/**").permitAll()
 //                            .antMatchers("/error").permitAll()
                     ;
                 })
                 .rememberMe(config -> {
                     config.rememberMeServices(rememberMeServices())
                     ;
-                });
+                })
+        ;
 //                .exceptionHandling(exception -> {
 //                    exception.accessDeniedPage("/access-denied");
 //                });

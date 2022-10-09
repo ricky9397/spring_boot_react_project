@@ -4,8 +4,8 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ricky.common.utils.Constants;
 import com.project.ricky.user.service.UserSecurityService;
-import com.project.ricky.user.vo.User;
-import com.project.ricky.user.vo.UserDetail;
+import com.project.ricky.user.dto.User;
+import com.project.ricky.user.dto.UserDetail;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -98,7 +98,6 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
-
 
     // 로그인 실패시 처리
     @Override

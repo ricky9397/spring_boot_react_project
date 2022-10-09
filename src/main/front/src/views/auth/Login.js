@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { authSaga, changeField, initializeForm, login } from '../../modules/auth';
+import { GoogleLogin } from "react-google-login";
 import { Link } from "react-router-dom";
 import { check } from '../../modules/user';
+import {gapi} from 'gapi-script';
+import axios from "axios";
+// import GoogleLogin from "../../components/APILogin/GoogleLogin";
+
+
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const Login = ({ handleLogin, history }) => {
-
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
@@ -112,9 +118,9 @@ const Login = ({ handleLogin, history }) => {
       console.log('로그인 성공');
       console.log(auth);
       const data = {
-        userId : auth.user.userId,
-        userName : auth.user.userName,
-        role : auth.user.role
+        userId: auth.user.userId,
+        userName: auth.user.userName,
+        role: auth.user.role
       }
       dispatch(check(data));
     }
@@ -130,9 +136,45 @@ const Login = ({ handleLogin, history }) => {
       } catch (e) {
         console.log('localStorage is not working');
       }
-    } 
+    }
   }, [user]);
 
+
+  useEffect(() => {
+    gapi.load("client:auth2", ()=>{
+      gapi.auth2.init({clientId:googleClientId})
+    })
+  });
+
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+  };
+  const responseGoogle = async (response) => {
+    console.log(1, response);
+    const jwtToken = await axios.post(
+      "http://localhost:8080/oauth2/login/google",
+      JSON.stringify(response),
+      config
+    );
+    console.log(jwtToken);
+  };
+
+  const test = (response) => {
+    console.log(2, response);
+    
+  };
+
+
+  // const onGoogleSignIn = async res => {
+  //   const { credential } = res;
+  //   console.log(credential);
+  //   // const result = await postLoginToken(credential, setIsLogin);
+  //   // setIsLogin(result);
+  // };
+  
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -157,9 +199,15 @@ const Login = ({ handleLogin, history }) => {
                     />
                     Github
                   </button>
-                  <button
+                  <GoogleLogin className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
+                    clientId={googleClientId}
+                    buttonText="google"
+                    onSuccess={responseGoogle}
+                    onFailure={test}
+                  />
+                  {/* <button
                     className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
-                    type="button"
+                    type="button" onClick={onGoogleSignIn}
                   >
                     <img
                       alt="..."
@@ -167,7 +215,10 @@ const Login = ({ handleLogin, history }) => {
                       src={require("assets/img/google.svg").default}
                     />
                     Google
-                  </button>
+                  </button> */}
+                  {/* <GoogleLogin onGoogleSignIn={onGoogleSignIn}/> */}
+                  
+
                 </div>
                 <hr className="mt-6 border-b-1 border-blueGray-300" />
               </div>

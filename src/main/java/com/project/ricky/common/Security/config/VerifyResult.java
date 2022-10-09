@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VerifyResult {
 
-    private boolean success;
+    private boolean success; // 토큰 상태체크.
     private String username;
 
 }
