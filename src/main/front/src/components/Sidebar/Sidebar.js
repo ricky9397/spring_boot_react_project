@@ -1,11 +1,13 @@
 /*eslint-disable*/
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import NotificationDropdown from "components/Dropdowns/NotificationDropdown.js";
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
 
 export default function Sidebar() {
+
   const [collapseShow, setCollapseShow] = React.useState("hidden");
   return (
     <>
@@ -180,7 +182,6 @@ export default function Sidebar() {
               Auth Layout Pages
             </h6>
             {/* Navigation */}
-
             <ul className="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
               <li className="items-center">
                 <Link

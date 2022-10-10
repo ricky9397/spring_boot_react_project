@@ -23,8 +23,9 @@ client.interceptors.request.use(
         const token = cookies.get('auth_token');
         if (!token) {
             config.headers['auth_token'] = null;
+        } else {
+            config.headers['auth_token'] = 'Bearer ' + token;
         }
-        config.headers['auth_token'] = 'Bearer ' + token;
         console.log("============================config", config);
         return config;
     },
@@ -39,13 +40,23 @@ client.interceptors.response.use(
         console.log("interceptors.response=====", response);
 
         if (response.config.url === "/auth/login") {
-            
+
             cookies.remove('auth_token');
             cookies.remove('refresh_token');
-
+            
             cookies.set('auth_token', response.headers.auth_token);
             cookies.set('refresh_token', response.headers.refresh_token);
         }
+
+        if (response.config.url.substring(0,13) === "/oauth2/login") {
+            
+            cookies.remove('auth_token');
+            cookies.remove('refresh_token');
+            
+            cookies.set('auth_token', response.headers.auth_token);
+            cookies.set('refresh_token', response.headers.refresh_token);
+        }
+
 
         return response;
     },

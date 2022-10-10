@@ -75,4 +75,8 @@ public class User{
 
     private String refreshToken;
 
+    @Column(length = 2000)
+    private String providerId;
+
+    private String provider;
 }

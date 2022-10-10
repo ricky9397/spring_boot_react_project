@@ -1,8 +1,11 @@
 package com.project.ricky.common.utils;
 
+import com.project.ricky.user.dto.User;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Utils {
 
@@ -37,7 +40,7 @@ public class Utils {
      * @return
      */
     public static boolean isEmpty(Object obj) {
-        if (obj == null) return true;
+        if (obj == null || obj.equals("") || obj.toString().length() == 0) return true;
         if ((obj instanceof String) && (((String) obj).trim().length() == 0))
             return true;
         if (obj instanceof Map)

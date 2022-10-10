@@ -18,11 +18,15 @@ const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] = createRequestActionTypes(
     'auth/LOGIN'
 );
 
+const [OAUTH2_LOGIN, OAUTH2_LOGIN_SUCCESS, OAUTH2_LOGIN_FAILURE] = createRequestActionTypes(
+    'oauth2/LOGIN'
+);
+
 export const changeField = createAction(
     CHANGE_FIELD,
     ({ form, key, value }) => ({
         form, // register , login
-        key, // username, password, passwordConfirm
+        key, // username, password
         value // 실제 바꾸려는 값
     })
 );
@@ -30,7 +34,7 @@ export const changeField = createAction(
 export const initializeForm = createAction(INITIALIZE_FORM, form => form); // register / login
 
 /* 서버로 보낼 파라미터 데이터 */
-export const register = createAction(REGISTER, ({userEmail, userPassword, userName, userPhone, userYn}) => ({
+export const register = createAction(REGISTER, ({ userEmail, userPassword, userName, userPhone, userYn }) => ({
     userEmail,
     userPassword,
     userName,
@@ -43,13 +47,22 @@ export const login = createAction(LOGIN, ({ userEmail, userPassword }) => ({
     userPassword
 }));
 
+export const googleLogin = createAction(OAUTH2_LOGIN, ({email, googleId, name}) => ({
+    googleId,
+    email,
+    name
+}));
+
+
 //saga 생성 api axios호출 (createRequestSaga -> registerSaga)
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 const loginSaga = createRequestSaga(LOGIN, authAPI.login);
+const googleLoginSaga = createRequestSaga(OAUTH2_LOGIN, authAPI.googleLogin);
 
 export function* authSaga() {
     yield takeLatest(REGISTER, registerSaga);
     yield takeLatest(LOGIN, loginSaga);
+    yield takeLatest(OAUTH2_LOGIN, googleLoginSaga);
 }
 
 const initialState = {
@@ -63,6 +76,11 @@ const initialState = {
     login: {
         userEmail: '',
         userPassword: ''
+    },
+    googleLogin: {
+        googleId: '',
+        email: '',
+        name: ''
     },
     auth: null,
     authError: null
@@ -98,6 +116,17 @@ const auth = handleActions(
         }),
         // 로그인 실패
         [LOGIN_FAILURE]: (state, { payload: error }) => ({
+            ...state,
+            authError: error
+        }),
+        // OAuth2 로그인 성공
+        [OAUTH2_LOGIN_SUCCESS]: (state, { payload: auth }) => ({
+            ...state,
+            authError: null,
+            auth
+        }),
+        // OAuth2 로그인 실패
+        [OAUTH2_LOGIN_FAILURE]: (state, { payload: error }) => ({
             ...state,
             authError: error
         })

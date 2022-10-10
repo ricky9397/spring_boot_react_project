@@ -1,8 +1,8 @@
 package com.project.ricky.user.service;
 
-import com.project.ricky.user.repository.UserRepository;
 import com.project.ricky.user.dto.User;
 import com.project.ricky.user.dto.UserDetail;
+import com.project.ricky.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,11 +23,16 @@ public class UserSecurityService implements UserDetailsService {
         return new UserDetail(userEntity);
     }
 
+    // 토큰 저장
     public void updateRefreshToken(String refreshToken, Long userId) {
         userRepository.update(refreshToken, userId); // 리플래쉬토큰 저장
     }
 
+    // 토큰 체크
     public User findByRefreshToken(Long userId) {
         return userRepository.findByRefreshToken(userId);
     }
+
+
+
 }

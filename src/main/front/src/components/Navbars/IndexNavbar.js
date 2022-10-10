@@ -13,7 +13,7 @@ export default function Navbar() {
   const cookies = new Cookies();
 
   const { user } = useSelector(({ user }) => ({ user: user.user }));
-
+  
   const onLogout = () => {
     cookies.remove('auth_token');
     cookies.remove('refresh_token');

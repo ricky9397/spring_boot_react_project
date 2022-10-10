@@ -1,13 +1,16 @@
 package com.project.ricky.user.controller;
 
 import com.project.ricky.common.utils.Utils;
-import com.project.ricky.user.service.UserService;
 import com.project.ricky.user.dto.User;
+import com.project.ricky.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +36,6 @@ public class UserController {
             if (result == 0) {
                 return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
             } else {
-
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
         } catch (Exception e) {
