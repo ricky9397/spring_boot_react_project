@@ -34,6 +34,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String authToken = request.getHeader(Constants.AUTH_TOKEN);
         logger.info("#####################################Token 체크 시작##########################################");
+
         // header가 있는지 확인
         if (authToken == null || !authToken.startsWith("Bearer ")) {
             chain.doFilter(request, response);
@@ -57,6 +58,4 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             throw new TokenExpiredException("401");
         }
     }
-
-
 }

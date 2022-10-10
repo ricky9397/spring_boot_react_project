@@ -16,3 +16,4 @@ export const admin = () => client.get('/admin/dashboard');
 
 export const getToken = () => client.post('/JWT/getToken');
 
+export const googleLogin = (data) => client.post('/oauth2/login/google', data);

@@ -1,13 +1,15 @@
 package com.project.ricky.user.service;
 
 import com.project.ricky.common.utils.Constants;
-import com.project.ricky.user.repository.UserRepository;
 import com.project.ricky.user.dto.User;
+import com.project.ricky.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -15,7 +17,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
+
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     public Long register(User user) throws Exception{
         user.setLockedYn(Constants.NO);
         user.setUseYn(Constants.YES);
@@ -26,14 +31,26 @@ public class UserService {
         return userRepository.save(user).getUserId();
     }
 
-    public Optional<User> login(User user) throws Exception {
-        log.info("login ===================== {}" , user);
-        Optional<User> result = userRepository.findByUserEmail(user.getUserEmail());
-        if(result != null){
-            System.out.println("UserService 로그인 성공");
-        } else {
-            System.out.println("UserService 로그인 실패");
-        }
-        return result;
+    public Optional<User> findByUserEmail(String email) {
+        return userRepository.findByUserEmail(email);
+    }
+
+    public User save(Map<String, Object> data) throws Exception {
+        User userRequest = User.builder()
+                .userEmail((String) data.get("email"))
+                .userPassword(bCryptPasswordEncoder.encode("google"))
+                .userName((String) data.get("name"))
+                .userPhone("00000000000")
+                .userYn(Constants.YES)
+                .lockedYn(Constants.NO)
+                .regDate(Constants.REGDATE)
+                .modDate(Constants.MODDATE)
+                .loginDate(Constants.LOGINDATE)
+                .useYn(Constants.YES)
+                .role(Constants.ROLE_USER)
+                .providerId((String) data.get("googleId"))
+                .provider("google")
+                .build();
+        return userRepository.save(userRequest);
     }
 }

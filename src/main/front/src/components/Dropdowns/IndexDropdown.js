@@ -1,8 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPopper } from "@popperjs/core";
+import { useSelector } from "react-redux";
 
 const IndexDropdown = () => {
+
+  const { user } = useSelector(({ user }) => ({ user: user.user }));
+
   // dropdown props
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
   const btnDropdownRef = React.createRef();
@@ -16,6 +20,7 @@ const IndexDropdown = () => {
   const closeDropdownPopover = () => {
     setDropdownPopoverShow(false);
   };
+
   return (
     <>
       <a
@@ -67,26 +72,37 @@ const IndexDropdown = () => {
         >
           Maps
         </Link>
+
+        {!user ?
         <div className="h-0 mx-4 my-2 border border-solid border-blueGray-100" />
-        <span
-          className={
-            "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
-          }
-        >
-          Auth Layout
-        </span>
-        <Link
-          to="/auth/login"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Login
-        </Link>
-        <Link
-          to="/auth/register"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Register
-        </Link>
+        : null}
+        {!user ?
+          <span
+            className={
+              "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
+            }
+          >
+            Auth Layout
+          </span>
+          : null}
+        {!user ?
+          <Link
+            to="/auth/login"
+            className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          >
+            Login
+          </Link>
+          : null}
+        {!user ?
+          <Link
+            to="/auth/register"
+            className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          >
+            Register
+          </Link>
+          : null}
+
+
         <div className="h-0 mx-4 my-2 border border-solid border-blueGray-100" />
         <span
           className={

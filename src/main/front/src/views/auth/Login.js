@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { authSaga, changeField, initializeForm, login } from '../../modules/auth';
+import { authSaga, changeField, initializeForm, login, googleLogin } from '../../modules/auth';
 import { GoogleLogin } from "react-google-login";
 import { Link } from "react-router-dom";
 import { check } from '../../modules/user';
-import {gapi} from 'gapi-script';
-import axios from "axios";
+import { gapi } from 'gapi-script';
+import Cookies from 'universal-cookie';
+import KaKaoLogin from 'react-kakao-login';
+
 // import GoogleLogin from "../../components/APILogin/GoogleLogin";
 
-
+const cookies = new Cookies();
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const Login = ({ handleLogin, history }) => {
@@ -17,6 +19,9 @@ const Login = ({ handleLogin, history }) => {
 
   // 에러처리
   const [error, setError] = useState(false);
+
+  const [isRemember, setIsRemember] = useState(false);
+  // const [cookies, setCookie, removeCookie] = useCookies(['rememberEmail']);
 
   const dispatch = useDispatch();
 
@@ -36,6 +41,24 @@ const Login = ({ handleLogin, history }) => {
         value,
       }),
     );
+  }
+
+  /*페이지가 최초 렌더링 될 경우*/
+  useEffect(() => {
+    if (cookies.get('rememberEmail') !== undefined) {
+      setUserEmail(cookies.get('rememberEmail'));
+      setIsRemember(true);
+    }
+  }, []);
+
+  const handleOnChange = (e) => {
+    console.log(e.target.checked)
+    setIsRemember(e.target.checked);
+    if (e.target.checked) {
+      cookies.set('rememberEmail', userEmail, { maxAge: 2000 });
+    } else {
+      cookies.remove('rememberEmail');
+    }
   }
 
   const onEmailHandler = (e) => {
@@ -71,28 +94,6 @@ const Login = ({ handleLogin, history }) => {
     // redux 서버 호출
     dispatch(login(data));
 
-    // try {
-    //   const data = { 'userEmail' : userEmail, 'userPassword' : userPassword }
-    //   await axios.post("http://localhost:8080/auth/login", JSON.stringify(data) , {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     withCredentials: true
-    //   }).then(res => {
-    //     if(res.status == 200){
-    //       const setToken = {
-    //         "auth_token" : res.headers.auth_token,
-    //         "refresh_token" : res.headers.refresh_token
-    //       }
-    //       handleLogin(setToken); // 토큰 발송
-    //       history.push("/"); // 로그인 성공 후 메인화면 이동.
-    //     } 
-    //   });
-
-    // } catch (e) {
-    //   console.log(e.message);
-    //   handleLogin("undefined");
-    // }
   }
 
   const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
@@ -118,9 +119,9 @@ const Login = ({ handleLogin, history }) => {
       console.log('로그인 성공');
       console.log(auth);
       const data = {
-        userId: auth.user.userId,
-        userName: auth.user.userName,
-        role: auth.user.role
+        userId: auth.userId,
+        userName: auth.userName,
+        role: auth.role
       }
       dispatch(check(data));
     }
@@ -139,42 +140,24 @@ const Login = ({ handleLogin, history }) => {
     }
   }, [user]);
 
-
+  // gapi
   useEffect(() => {
-    gapi.load("client:auth2", ()=>{
-      gapi.auth2.init({clientId:googleClientId})
+    gapi.load("client:auth2", () => {
+      gapi.auth2.init({ clientId: googleClientId })
     })
   });
 
-
-  const config = {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  };
+  // 구글 로그인 성공 핸들러
   const responseGoogle = async (response) => {
-    console.log(1, response);
-    const jwtToken = await axios.post(
-      "http://localhost:8080/oauth2/login/google",
-      JSON.stringify(response),
-      config
-    );
-    console.log(jwtToken);
+    dispatch(googleLogin(response.profileObj));
   };
 
-  const test = (response) => {
-    console.log(2, response);
-    
+  // 구글 로그인 실패 핸들러
+  const responseFailGoogle = (response) => {
+    console.log(response);
+    setError('구글 로그인 실패');
   };
 
-
-  // const onGoogleSignIn = async res => {
-  //   const { credential } = res;
-  //   console.log(credential);
-  //   // const result = await postLoginToken(credential, setIsLogin);
-  //   // setIsLogin(result);
-  // };
-  
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -188,7 +171,7 @@ const Login = ({ handleLogin, history }) => {
                   </h6>
                 </div>
                 <div className="btn-wrapper text-center">
-                  <button
+                  {/* <button
                     className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
                     type="button"
                   >
@@ -198,12 +181,18 @@ const Login = ({ handleLogin, history }) => {
                       src={require("assets/img/github.svg").default}
                     />
                     Github
-                  </button>
+                  </button> */}
+                  {/* <KaKaoLogin className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
+                    jsKey=""
+                    buttonText="KaKao" 
+                    onSuccess={responseGoogle}
+                    onFailure={responseFailGoogle}
+                  /> */}
                   <GoogleLogin className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
                     clientId={googleClientId}
                     buttonText="google"
                     onSuccess={responseGoogle}
-                    onFailure={test}
+                    onFailure={responseFailGoogle}
                   />
                   {/* <button
                     className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
@@ -217,7 +206,6 @@ const Login = ({ handleLogin, history }) => {
                     Google
                   </button> */}
                   {/* <GoogleLogin onGoogleSignIn={onGoogleSignIn}/> */}
-                  
 
                 </div>
                 <hr className="mt-6 border-b-1 border-blueGray-300" />
@@ -260,6 +248,7 @@ const Login = ({ handleLogin, history }) => {
                         id="customCheckLogin"
                         type="checkbox"
                         className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
+                        onChange={handleOnChange} checked={isRemember}
                       />
                       <span className="ml-2 text-sm font-semibold text-blueGray-600">
                         아이디 기억하기
@@ -304,3 +293,5 @@ const Login = ({ handleLogin, history }) => {
 }
 
 export default Login
+
+

@@ -3,9 +3,9 @@ package com.project.ricky.common.Security.config;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.ricky.common.utils.Constants;
-import com.project.ricky.user.service.UserSecurityService;
 import com.project.ricky.user.dto.User;
 import com.project.ricky.user.dto.UserDetail;
+import com.project.ricky.user.service.UserSecurityService;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -30,12 +29,10 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public JWTLoginFilter(
             AuthenticationManager authenticationManager,    // AuthenticationManager 주입을 받는다.
-            RememberMeServices rememberMeServices,       // UsernamePasswordAuthenticationFilter 가 rememberMeServices 필요로 하기때문에 주입을 받는다.
             UserSecurityService userSecurityService
     ) {
         this.authenticationManager = authenticationManager;
         this.userSecurityService = userSecurityService;
-        this.setRememberMeServices(rememberMeServices);
         setFilterProcessesUrl("/auth/login");
     }
 
@@ -95,7 +92,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader(Constants.REFRESH_TOKEN, refreshToken);
         response.setHeader(Constants.AUTH_TOKEN, JWTUtil.makeAuthToken(userDetail));
 
-        response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail));
+        response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetail.getUser()));
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
 

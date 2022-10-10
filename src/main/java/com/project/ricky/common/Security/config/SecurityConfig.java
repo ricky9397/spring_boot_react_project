@@ -36,21 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userSecurityService).passwordEncoder(encoderPwd());
     }
 
-    // 시큐리티에서 제공하는 cookie 에 Remember Me 기능
-    private RememberMeServices rememberMeServices() {
-        TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(
-                "paper-site-remember-me",
-                userSecurityService
-        );
-        rememberMeServices.setParameter("remember-me");
-        rememberMeServices.setAlwaysRemember(true);
-        rememberMeServices.setTokenValiditySeconds(3600);
-        return rememberMeServices;
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager(), rememberMeServices(), userSecurityService);
+        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager(), userSecurityService);
         JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager(), userSecurityService);
         http
                 .addFilter(corsConfig.corsFilter()) // 시큐리티 cors
@@ -65,20 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     config
                             .antMatchers("/**").permitAll()
                             .antMatchers("/auth/**").permitAll()
-//                            .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                             .antMatchers("/admin/**").hasAuthority("ROLE_USER")
                             .antMatchers("/oauth2/**").permitAll()
-//                            .antMatchers("/error").permitAll()
                     ;
-                })
-                .rememberMe(config -> {
-                    config.rememberMeServices(rememberMeServices())
-                    ;
-                })
-        ;
-//                .exceptionHandling(exception -> {
-//                    exception.accessDeniedPage("/access-denied");
-//                });
+                });
     }
 
 }

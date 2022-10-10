@@ -15,9 +15,6 @@ export default function createRequestSaga(type, request) {
     const SUCCESS = `${type}_SUCCESS`;
     const FAILURE = `${type}_FAILURE`;
 
-    
-    
-
     return function* (action) {
         
         console.log("로딩시작");
