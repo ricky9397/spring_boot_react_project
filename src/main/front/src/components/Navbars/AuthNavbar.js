@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import PagesDropdown from "components/Dropdowns/PagesDropdown.js";
 
 export default function Navbar(props) {
+
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   return (
     <>
@@ -36,13 +37,13 @@ export default function Navbar(props) {
           >
             <ul className="flex flex-col lg:flex-row list-none mr-auto">
               <li className="flex items-center">
-                <a
+                {/* <a
                   className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                   href="https://www.creative-tim.com/learning-lab/tailwind/react/overview/notus?ref=nr-auth-navbar"
                 >
                   <i className="lg:text-blueGray-200 text-blueGray-400 far fa-file-alt text-lg leading-lg mr-2" />{" "}
                   Docs
-                </a>
+                </a> */}
               </li>
             </ul>
             <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
@@ -89,12 +90,21 @@ export default function Navbar(props) {
                 >
                   <i className="fas fa-arrow-alt-circle-down"></i> Download
                 </button> */}
-                <Link
-                  to="/auth/login"
-                  className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-white"
-                >
-                  로그인
-                </Link>
+                {window.location.href.substring(27) == 'login' ? (
+                  <Link
+                    to="/auth/register"
+                    className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-white"
+                  >
+                    회원가입
+                  </Link>
+                ) : (
+                  <Link
+                    to="/auth/login"
+                    className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-white"
+                  >
+                    로그인
+                  </Link>
+                )}
               </li>
             </ul>
           </div>
