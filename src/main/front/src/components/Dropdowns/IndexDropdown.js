@@ -6,6 +6,11 @@ import { useSelector } from "react-redux";
 const IndexDropdown = () => {
 
   const { user } = useSelector(({ user }) => ({ user: user.user }));
+  const item = localStorage.getItem("user");
+  let role = "";
+  if (item != null) {
+    role = JSON.parse(item).role;
+  }
 
   // dropdown props
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
@@ -41,42 +46,51 @@ const IndexDropdown = () => {
           "bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"
         }
       >
-        <span
-          className={
-            "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
-          }
-        >
-          Admin Layout
-        </span>
-        <Link
-          to="/admin/dashboard"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Dashboard
-        </Link>
-        <Link
-          to="/admin/settings"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Settings
-        </Link>
-        <Link
-          to="/admin/tables"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Tables
-        </Link>
-        <Link
-          to="/admin/maps"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Maps
-        </Link>
-
-        {!user ?
-        <div className="h-0 mx-4 my-2 border border-solid border-blueGray-100" />
-        : null}
-        {!user ?
+        {role == "ROLE_ADMIN" &&
+          <span
+            className={
+              "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
+            }
+          >
+            Admin Layout
+          </span>
+        }
+        {role == "ROLE_ADMIN" &&
+          <Link
+            to="/admin/dashboard"
+            className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          >
+            Dashboard
+          </Link>
+        }
+        {role == "ROLE_ADMIN" &&
+          <Link
+            to="/admin/settings"
+            className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          >
+            Settings
+          </Link>
+        }
+        {role == "ROLE_ADMIN" &&
+          <Link
+            to="/admin/tables"
+            className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          >
+            Tables
+          </Link>
+        }
+        {role == "ROLE_ADMIN" &&
+          <Link
+            to="/admin/maps"
+            className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          >
+            Maps
+          </Link>
+        }
+        {!user &&
+          <div className="h-0 mx-4 my-2 border border-solid border-blueGray-100" />
+        }
+        {!user &&
           <span
             className={
               "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
@@ -84,15 +98,15 @@ const IndexDropdown = () => {
           >
             Auth Layout
           </span>
-          : null}
-        {!user ?
+        }
+        {!user &&
           <Link
             to="/auth/login"
             className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
           >
             Login
           </Link>
-          : null}
+        }
         {!user ?
           <Link
             to="/auth/register"

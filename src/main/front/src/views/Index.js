@@ -1,7 +1,8 @@
 /*eslint-disable*/
 import React from "react";
 import { Link } from "react-router-dom";
-import mainImg from "../assets/img/pattern_react.png";
+import mainImg from "../assets/img/indexMain_adobe_express.svg";
+import searchImg from "../assets/img/search.png";
 
 // nav, footer
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
@@ -16,20 +17,22 @@ const Index = () => {
           <div className="w-full md:w-8/12 lg:w-6/12 xl:w-6/12 px-4">
             <div className="pt-32 sm:pt-0">
               <h2 className="font-semibold text-4xl text-blueGray-600">
-                Notus React - A beautiful extension for Tailwind CSS.
+                {/* Notus React - A beautiful extension for Tailwind CSS. */}
+                너와 함께 짝꿍..
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-blueGray-500">
-                Notus React is Free and Open Source. It does not change any of
-                the CSS from{" "}
+                {/* Notus React is Free and Open Source. It does not change any of */}
+                우리 지금 만나 당장 만나
+                {/* the CSS from{" "} */}
                 <a
                   href="https://tailwindcss.com/?ref=creativetim"
                   className="text-blueGray-600"
                   target="_blank"
                 >
-                  Tailwind CSS
+                  {/* Tailwind CSS */}
                 </a>
-                . It features multiple HTML elements and it comes with dynamic
-                components for ReactJS, Vue and Angular.
+                {/* . It features multiple HTML elements and it comes with dynamic
+                components for ReactJS, Vue and Angular. */}
               </p>
               <div className="mt-12">
                 <a
@@ -37,22 +40,22 @@ const Index = () => {
                   target="_blank"
                   className="get-started text-white font-bold px-6 py-4 rounded outline-none focus:outline-none mr-1 mb-1 bg-lightBlue-500 active:bg-lightBlue-600 uppercase text-sm shadow hover:shadow-lg ease-linear transition-all duration-150"
                 >
-                  Get started
+                  짝꿍찾기
                 </a>
                 <a
                   href="https://github.com/creativetimofficial/notus-react?ref=nr-index"
                   className="github-star ml-1 text-white font-bold px-6 py-4 rounded outline-none focus:outline-none mr-1 mb-1 bg-blueGray-700 active:bg-blueGray-600 uppercase text-sm shadow hover:shadow-lg ease-linear transition-all duration-150"
                   target="_blank"
                 >
-                  Github Star
+                  짝꿍채팅
                 </a>
               </div>
             </div>
           </div>
         </div>
-
+        
         <img
-          className="absolute top-0 b-auto right-0 pt-16 sm:w-6/12 -mt-48 sm:mt-0 w-10/12 max-h-860px"
+          className="absolute top-0 b-auto right-0 pt-15 sm:w-6/12 -mt-48 sm:mt-0 w-10/12 max-h-860px"
           // src={require("assets/img/pattern_react.png").default}
           src={mainImg}
           alt="..."
@@ -82,10 +85,10 @@ const Index = () => {
         <div className="container mx-auto">
           <div className="flex flex-wrap items-center">
             <div className="w-10/12 md:w-6/12 lg:w-4/12 px-12 md:px-4 mr-auto ml-auto -mt-32">
-              <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-lg bg-lightBlue-500">
+              <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-lg bg-orange-200">
                 <img
                   alt="..."
-                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80"
+                  src={searchImg}
                   className="w-full align-middle rounded-t-lg"
                 />
                 <blockquote className="relative p-8 mb-4">
@@ -97,7 +100,7 @@ const Index = () => {
                   >
                     <polygon
                       points="-30,95 583,95 583,65"
-                      className="text-lightBlue-500 fill-current"
+                      className="text-orange-500 fill-current"
                     ></polygon>
                   </svg>
                   <h4 className="text-xl font-bold text-white">

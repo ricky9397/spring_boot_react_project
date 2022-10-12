@@ -11,7 +11,7 @@ import Cookies from "universal-cookie";
 
 export default function Navbar() {
   const cookies = new Cookies();
-
+  
   const { user } = useSelector(({ user }) => ({ user: user.user }));
   
   const onLogout = () => {
@@ -33,7 +33,7 @@ export default function Navbar() {
               to="/"
               className="text-blueGray-700 text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase"
             >
-              Developer 명호
+              짝꿍
             </Link>
             <button
               className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
@@ -52,13 +52,13 @@ export default function Navbar() {
           >
             <ul className="flex flex-col lg:flex-row list-none mr-auto">
               <li className="flex items-center">
-                <a
+                {/* <a
                   className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                   href="https://www.creative-tim.com/learning-lab/tailwind/react/overview/notus?ref=nr-index-navbar"
                 >
                   <i className="text-blueGray-400 far fa-file-alt text-lg leading-lg mr-2" />{" "}
                   Docs
-                </a>
+                </a> */}
               </li>
             </ul>
             <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
