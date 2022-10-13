@@ -8,7 +8,9 @@ import searchImg from "../assets/img/search.png";
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import Footer from "components/Footers/Footer.js";
 
+
 const Index = () => {
+
   return (
     <>
       <IndexNavbar fixed />
