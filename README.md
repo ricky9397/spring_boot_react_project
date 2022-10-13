@@ -13,3 +13,10 @@
 - 스프링클라우드 + 리눅스 + Doker + Jenkese 배포 // 
 - MySql
 
+
+## 서버
+- 현재 Oracle VM VirtualBox 사용 
+- nginx 설치 확인 명령어 : ps -ef | grep nginx
+- 포트 (80포트)개방 : sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+- 개방 후 포트리로드 : sudo firewall-cmd --reload
+- 도커 설치 -> 도커 이미지설치 -> 도커콤포즈 -> 젠킨스 2시간주기 
