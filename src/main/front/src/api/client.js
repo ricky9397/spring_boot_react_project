@@ -26,7 +26,6 @@ client.interceptors.request.use(
         } else {
             config.headers['auth_token'] = 'Bearer ' + token;
         }
-        console.log("============================config", config);
         return config;
     },
     error => {
