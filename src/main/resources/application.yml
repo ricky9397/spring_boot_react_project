@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
   servlet:
     context-path: /
     encoding:
@@ -15,10 +15,15 @@ spring:
           google:
             client-id: 596950358351-5016avddl8fq2n4toiqirm1a2akk1pth.apps.googleusercontent.com
             client-secret: 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
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/project?serverTimezone=Asia/Seoul
+#    username: project
+#    password: 1234
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/project?serverTimezone=Asia/Seoul
-    username: project
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ricky?serverTimezone=Asia/Seoul
+    username: ricky
     password: 1234
 
   mvc:
