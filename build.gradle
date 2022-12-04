@@ -42,9 +42,9 @@ dependencies {
 
 }
 
-/*tasks.named('test') {
+tasks.named('test') {
 	useJUnitPlatform()
-}*/
+}
 
 //def frontendDir = "$projectDir/src/main/front"
 //
