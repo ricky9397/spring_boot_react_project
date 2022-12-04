@@ -18,7 +18,7 @@ import Auth from "layouts/Auth.js";
 // views without layouts
 import Landing from "views/Landing.js";
 import Profile from "views/Profile.js";
-import Index from "views/Index.js";
+import Index from "views";
 
 const sagaMiddleware = createSagaMiddleware();
 // 개발자도구 Redux탭 생성하기.. 

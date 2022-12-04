@@ -271,7 +271,7 @@ const Register = ({history}) => {
                     <span className="ml-2 text-sm font-semibold text-blueGray-600">
                       개인정보 보호정책에{" "}
                       <a
-                        href="#pablo"
+                        href="views/auth/Register#pablo"
                         className="text-lightBlue-500"
                         onClick={(e) => e.preventDefault()}
                       >

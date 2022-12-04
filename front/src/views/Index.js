@@ -27,7 +27,7 @@ const Index = () => {
                 우리 지금 만나 당장 만나
                 {/* the CSS from{" "} */}
                 <a
-                  href="https://tailwindcss.com/?ref=creativetim"
+                  href="views/Index?ref=creativetim"
                   className="text-blueGray-600"
                   target="_blank"
                 >
@@ -580,7 +580,7 @@ const Index = () => {
               <p className="text-lg font-light leading-relaxed mt-4 mb-4 text-blueGray-400">
                 Since{" "}
                 <a
-                  href="https://tailwindcss.com/?ref=creativetim"
+                  href="views/Index?ref=creativetim"
                   className="text-blueGray-300"
                   target="_blank"
                 >
