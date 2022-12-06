@@ -1,31 +1,40 @@
 version: '3.4'
 
 services:
-  web:
+  nginx:
     image: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     networks:
       - ricky_net
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     links:
       - was:spring
-      - frontend:react
-    entrypoint:
-      - "nginx"
-      - "-g"
-      - "daemon off;"
+      - react:react
+#    entrypoint:
+#      - "nginx"
+#      - "-g"
+#      - "daemon off;"
     depends_on:
       - was
-      - frontend
+      - react
   was:
     image: spring
-    build: .
+    container_name: spring_was
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
       - ricky_net
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
     links:
       - db:ricky_db
 #    entrypoint:
@@ -49,9 +58,12 @@ services:
     ports:
       - "3306:3306"
 
-  frontend:
+  react:
     image: react
-    build: ./front
+    container_name: react_web
+    build:
+      context: ./front
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     networks:
