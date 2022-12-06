@@ -15,6 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
         CorsRegistry
                 .addMapping("/**") // 프로그램에서 제공하는 URL
                 .allowedOrigins("http://localhost:3000")
+//                .allowedOrigins("http://localhost:3000")
                 .allowedHeaders("*") // 어떤 헤더들을 허용할 것인지
                 .allowedMethods( // 어떤 메서드를 허용할 것인지 (GET, POST...)
                         HttpMethod.GET.name(),
