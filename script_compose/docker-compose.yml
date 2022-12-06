@@ -27,7 +27,7 @@ services:
       - "java"
       - "-jar"
       - "-Duser.timezone=Asia/Seoul"
-      - "/app.jar"
+      - "/ricky.jar"
     depends_on:
       - db
   db:
