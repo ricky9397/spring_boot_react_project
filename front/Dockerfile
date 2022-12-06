@@ -1,7 +1,9 @@
-# Dockerfile
-FROM node:alpine as builder
-WORKDIR /usr/src/app
-COPY package.json .
+FROM node:14.17.6-alpine
+RUN mkdir /app
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json /app/package.json
 RUN npm install
-COPY ./ ./
-RUN npm run build
+CMD ["npm", "start"]
+
+
