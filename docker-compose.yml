@@ -2,9 +2,10 @@ version: '3.4'
 
 services:
   nginx:
+    container_name: nginx
     image: nginx
     build:
-      context: ./nginx
+      context: nginx_Dockerfile
       dockerfile: Dockerfile
     networks:
       - ricky_net
@@ -12,7 +13,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/var/lib/letsencrypt:/var/lib/letsencrypt
+      - ./nginx/nginx.cof:/etc/nginx/nginx.conf
+      - ./content:/var/www
     links:
       - was:spring
       - react:react
