@@ -5,7 +5,8 @@ WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install -g npm@8.15.0
 COPY ./ ./
-RUN npm run build
+#RUN npm run build
+CMD ["npm", "run", "build"]
 
 FROM nginx 
 EXPOSE 3000
