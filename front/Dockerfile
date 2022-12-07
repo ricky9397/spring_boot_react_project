@@ -1,6 +1,7 @@
 # Dockerfile
 
 FROM node:alpine as builder
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install -g npm@8.15.0
