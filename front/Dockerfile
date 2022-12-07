@@ -3,7 +3,7 @@
 FROM node:alpine as builder
 WORKDIR /usr/src/app
 COPY package.json .
-RUN npm install -g npm@9.1.3
+RUN npm install -g npm@8.15.0
 COPY ./ ./
 RUN npm run build
 
