@@ -80,5 +80,10 @@
     "@types/react-dom": "^18.0.9",
     "cross-env": "^7.0.3",
     "webpack-dev-server": "^4.11.0"
+  },
+  "resolve": {
+    "alias": {
+      "react/jsx-runtime": "react/jsx-runtime.js"
+    }
   }
 }
