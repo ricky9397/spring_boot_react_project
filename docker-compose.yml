@@ -11,7 +11,7 @@ services:
       - ricky_net
     ports:
       - "80:80"
-#      - "443:443"
+      - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
 #      - ./conf/:/etc/nginx/conf.d
@@ -20,14 +20,14 @@ services:
       - ./content:/var/www
     links:
       - was:spring
-#      - react:react
-#    entrypoint:
-#      - "nginx"
-#      - "-g"
-#      - "daemon off;"
+      - react:react
+    entrypoint:
+      - "nginx"
+      - "-g"
+      - "daemon off;"
     depends_on:
       - was
-#      - react
+      - react
   was:
     image: spring
     container_name: spring_was
@@ -62,23 +62,23 @@ services:
       - /build/DB/mysql:/var/lib/mysql
     ports:
       - "3306:3306"
-#  react:
-#    image: react
-#    container_name: react_web
-#    build:
-#      context: ./front
-#      dockerfile: Dockerfile
-#    ports:
-#      - "3000:3000"
-#    networks:
-#      - ricky_net
-#    links:
-#      - was:ricky
-#    volumes:
-#      - /usr/src/app/node_modules
-#      - ./:/usr/src/app
-#    depends_on:
-#      - was
+  react:
+    image: react
+    container_name: react_web
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - ricky_net
+    links:
+      - was:ricky
+    volumes:
+      - /usr/src/app/node_modules
+      - ./:/usr/src/app
+    depends_on:
+      - was
 
 networks:
   ricky_net:
