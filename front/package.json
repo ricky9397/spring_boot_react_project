@@ -5,6 +5,7 @@
   "repository": "https://github.com/creativetimofficial/notus-react",
   "license": "MIT",
   "dependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@craco/craco": "^6.4.5",
     "@fortawesome/fontawesome-free": "5.15.3",
     "@popperjs/core": "2.9.1",
