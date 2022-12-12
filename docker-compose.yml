@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   nginx:
-    container_name: nginx
+    container_name: nginx_web
     image: nginx
     build:
       context: nginx_Dockerfile
@@ -51,6 +51,7 @@ services:
       - db
   db:
     image: mysql
+    container_name: db_mysql
     networks:
       - ricky_net
     environment:
@@ -66,7 +67,7 @@ services:
     image: react
     container_name: react_web
     build:
-      context: ./front
+      context: ./react_front
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
