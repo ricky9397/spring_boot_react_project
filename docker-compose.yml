@@ -21,10 +21,10 @@ services:
     links:
       - was:spring
       - react:react
-    entrypoint:
-      - "nginx"
-      - "-g"
-      - "daemon off;"
+#    entrypoint:
+#      - "nginx"
+#      - "-g"
+#      - "daemon off;"
     depends_on:
       - was
       - react
