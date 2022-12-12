@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        화면디자인좀만들어줄사람.....? 제발...
+        리액트 화면디자인좀만들어줄사람.....? 제발...
       </header>
     </div>
   );
