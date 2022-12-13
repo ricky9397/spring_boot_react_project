@@ -42,16 +42,9 @@ services:
       - "8080:8080"
     networks:
       - ricky_net
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
     links:
       - db:db_mysql
       - react:react
-#    entrypoint:
-#      - "java"
-#      - "-jar"
-#      - "-Duser.timezone=Asia/Seoul"
-#      - "/ricky.jar"
     depends_on:
       - db
   db:
