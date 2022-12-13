@@ -4,17 +4,16 @@ services:
   nginx:
     image: nginx
     container_name: nginx_web
-    build:
-      context: server_proxy
-      dockerfile: Dockerfile
+    #    build:
+    #      context: proxy
+    #      dockerfile: Dockerfile
     networks:
       - ricky_net
     ports:
       - "80:80"
     #      - "443:443"
     volumes:
-#      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
-       - ./proxy/nginx:/etc/nginx/conf.d
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
       ############ 도메인 SSL인증서 발급 후 적용. ###################
       #- ./proxy/data/nginx.conf:/etc/nginx/nginx.conf
     #      - ./proxy/data/nginx:/etc/nginx/conf.d
@@ -22,11 +21,9 @@ services:
     #      - ./proxy/data/certbot/www:/var/www/certbot
     ############################################################
     links:
-      - was:spring
-#      - web:react
+      - web:react
     depends_on:
-      - was
-#      - web
+      - web
   ################# 도메인 SSL인증서 발급 후 적용. ##############################################################
   # 6시간마다 nginx reload
   #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
@@ -39,56 +36,26 @@ services:
   # 12시간마다 재발급
   #    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   #########################################################################################################
-  was:
-    image: spring
-    container_name: spring_was
+  web:
+    image: react
+    container_name: react_web
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "3000:3000"
     networks:
       - ricky_net
     links:
-      - db:db_mysql
-#      - web:react
-    depends_on:
-      - db
-#  web:
-#    image: react
-#    container_name: react_web
-#    build:
-#      context: ./react_front
-#      dockerfile: Dockerfile
-#    ports:
-#      - "3000:3000"
-#    networks:
-#      - ricky_net
-#    links:
-#      - was:spring
-#    volumes:
-#      - /usr/src/app/node_modules
-#      - ./react_front:/usr/src/app
-#    depends_on:
-#      - was
-  db:
-    image: mysql
-    container_name: db_mysql
-    networks:
-      - ricky_net
-    environment:
-      - MYSQL_DATABASE=ricky_schema
-      - MYSQL_USER=ricky
-      - MYSQL_PASSWORD=1234
-      - MYSQL_ROOT_PASSWORD=password
+      - was:spring
     volumes:
-      - /build/DB/mysql:/var/lib/mysql
-    ports:
-      - "3306:3306"
-
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    depends_on:
+      - was
 
 networks:
   ricky_net:
 
-  
+
 
