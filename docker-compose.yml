@@ -20,7 +20,7 @@ services:
       - ./nginx/var/lib/letsencrypt:/var/lib/letsencrypt
 #      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./content:/var/www
-     # ./nginx_Dockerfile/nginx.conf:/etc/nginx/nginx.conf 로  
+     # ./nginx_Dockerfile/nginx.conf:/etc/nginx/nginx.conf 로 
       
     links:
       - was:spring
