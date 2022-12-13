@@ -24,3 +24,11 @@
 - 포트 (80포트)개방 : sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 - 개방 후 포트리로드 : sudo firewall-cmd --reload
 - 도커 설치 -> 도커 이미지설치 -> 도커콤포즈 -> 젠킨스 2시간주기 
+
+
+도커컴포즈 올리기전 빌드 : gradle build --exclude-task test
+도커이미지컨테이너 전부삭제 : docker system prune -a -f
+도커컨테이너 접속 : docker exec -it  [컨테이너ID] /bin/bash
+도커볼륨 전부 삭제 : docker volume rm $(docker volume ls -qf dangling=true)
+포트죽이기 : sudo lsof -i :[포트번호]
+sudo kill -9 [PID]
