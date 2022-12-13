@@ -1,12 +1,44 @@
 version: '3.4'
 
 services:
+  was:
+    image: spring
+    container_name: spring_was
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - ricky_net
+    links:
+      - db:db_mysql
+      - web:react
+    depends_on:
+      - db
+  web:
+    image: react
+    container_name: react_web
+    build:
+      context: ./react_front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - ricky_net
+    links:
+      - was:spring
+    volumes:
+      - /usr/src/app/node_modules
+      - ./react_front:/usr/src/app
+    depends_on:
+      - was
   nginx:
     image: nginx
     container_name: nginx_web
-    build:
-      context: proxy
-      dockerfile: Dockerfile
+#    build:
+#      context: proxy
+#      dockerfile: Dockerfile
     networks:
       - ricky_net
     ports:
@@ -38,21 +70,6 @@ services:
 # 12시간마다 재발급
 #    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   #########################################################################################################
-  was:
-    image: spring
-    container_name: spring_was
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    networks:
-      - ricky_net
-    links:
-      - db:db_mysql
-      - web:react
-    depends_on:
-      - db
   db:
     image: mysql
     container_name: db_mysql
@@ -67,23 +84,7 @@ services:
       - /build/DB/mysql:/var/lib/mysql
     ports:
       - "3306:3306"
-  web:
-    image: react
-    container_name: react_web
-    build:
-      context: ./react_front
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    networks:
-      - ricky_net
-    links:
-      - was:spring
-    volumes:
-      - /usr/src/app/node_modules
-      - ./react_front:/usr/src/app
-    depends_on:
-      - was
+
 
 networks:
   ricky_net:
