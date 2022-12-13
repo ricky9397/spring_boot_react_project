@@ -11,7 +11,7 @@ services:
       - ricky_net
     ports:
       - "80:80"
-      - "443:443"
+#      - "443:443"
     volumes:
       - ./proxy/data/nginx.conf:/etc/nginx/nginx.conf
 ############ 도메인 SSL인증서 발급 후 적용. ###################
@@ -21,10 +21,10 @@ services:
 ############################################################
     links:
       - was:spring
-      - react:react
+      - web:react
     depends_on:
       - was
-      - react
+      - web
 ################# 도메인 SSL인증서 발급 후 적용. ##############################################################
 # 6시간마다 nginx reload
 #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
@@ -50,7 +50,7 @@ services:
       - ricky_net
     links:
       - db:db_mysql
-      - react:react
+      - web:react
     depends_on:
       - db
 
@@ -69,7 +69,7 @@ services:
     ports:
       - "3306:3306"
 
-  react:
+  web:
     image: react
     container_name: react_web
     build:
