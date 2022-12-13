@@ -86,7 +86,7 @@ services:
       - /usr/src/app/node_modules
       - ./react_front:/usr/src/app
     depends_on:
-      - was
+      - db
 
 networks:
   ricky_net:
