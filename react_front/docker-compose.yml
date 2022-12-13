@@ -46,13 +46,13 @@ services:
       - "3000:3000"
     networks:
       - ricky_net
-    links:
-      - was:spring
+#    links:
+#      - was:spring
     volumes:
       - /usr/src/app/node_modules
       - .:/usr/src/app
-    depends_on:
-      - was
+#    depends_on:
+#      - was
 
 networks:
   ricky_net:
