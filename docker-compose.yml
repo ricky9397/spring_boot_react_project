@@ -45,7 +45,8 @@ services:
 #    environment:
 #      - SPRING_PROFILES_ACTIVE=docker
     links:
-      - db:ricky_db
+      - db:db_mysql
+      - react:react
 #    entrypoint:
 #      - "java"
 #      - "-jar"
@@ -78,7 +79,7 @@ services:
     networks:
       - ricky_net
     links:
-      - was:ricky
+      - was:spring
     volumes:
       - /usr/src/app/node_modules
       - ./:/usr/src/app
