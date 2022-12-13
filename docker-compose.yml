@@ -17,6 +17,7 @@ services:
 #      - ./nginx:/etc/nginx/conf.d
 #      - ./conf/:/etc/nginx/conf.d
 #      - ./conf/:/etc/nginx/conf.d/nginx.conf
+    # ssl 인증서 확인 후 적용. docker 컨테이너 접속 후 경로도 확인하자.
       - ./nginx/var/lib/letsencrypt:/var/lib/letsencrypt
 #      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./content:/var/www
