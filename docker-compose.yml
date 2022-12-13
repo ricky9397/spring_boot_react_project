@@ -75,6 +75,7 @@ services:
       - was:spring
     volumes:
       - /usr/src/app/node_modules
+      # volumes 마운트 경로 
       - ./:/usr/src/app
     depends_on:
       - was
