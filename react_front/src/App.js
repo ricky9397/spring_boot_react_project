@@ -3,7 +3,7 @@ import './App.css';
 import Login from './components/AuthForm';
 
 const App = () => {
-  return (
+  return _jsx(
     <Login />
   );
 }

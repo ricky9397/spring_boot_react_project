@@ -6,7 +6,7 @@ import { GoogleLogin } from "react-google-login";
 const AuthForm = () => {
 
 
-  return (
+  return _jsx(
     <div className="login">
       <h4>떡꿍</h4>
       <form>
