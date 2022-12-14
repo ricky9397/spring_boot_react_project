@@ -1,4 +1,5 @@
 import React from 'react';
+import {jsx as _jsx} from 'react/jsx-runtime';
 import "../assets/styles/login.css";
 import { GoogleLogin } from "react-google-login";
 

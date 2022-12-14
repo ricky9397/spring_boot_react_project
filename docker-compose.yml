@@ -54,7 +54,6 @@ services:
       - back-network
     links:
       - db:db_mysql
-      - web:react
     depends_on:
       - db
   web:
