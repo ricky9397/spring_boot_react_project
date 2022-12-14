@@ -7,7 +7,7 @@ const AuthForm = () => {
 
   return (
     <div className="login">
-      <h4>Login</h4>
+      <h4>떡꿍</h4>
       <form>
         <div className="text_area">
           <input
