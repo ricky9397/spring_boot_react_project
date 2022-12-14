@@ -3,9 +3,7 @@ import "../assets/styles/login.css";
 import { GoogleLogin } from "react-google-login";
 
 function AuthForm() {
-
-
-  return _jsx(
+  return (
     <div className="login">
       <h4>떡꿍</h4>
       <form>

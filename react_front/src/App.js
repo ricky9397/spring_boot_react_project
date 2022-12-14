@@ -2,7 +2,9 @@ import './App.css';
 import Login from './components/AuthForm';
 
 function App() {
-  <Login />
+  return (
+    <Login />
+  );
 }
 
 export default App;
