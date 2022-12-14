@@ -13,8 +13,8 @@ services:
     ports:
       - "80:80"
     #      - "443:443"
-    volumes:
-      - ./server_proxy:/etc/nginx/conf.d
+   volumes:
+     - ./server_proxy:/etc/nginx/conf.d
       #- ./proxy/nginx.conf:/etc/nginx/nginx.conf
 #      - ./proxy/nginx:/etc/nginx/conf.d
       ############ 도메인 SSL인증서 발급 후 적용. ###################
