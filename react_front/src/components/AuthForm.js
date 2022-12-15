@@ -2,7 +2,7 @@ import React from 'react';
 import "../assets/styles/login.css";
 import { GoogleLogin } from "react-google-login";
 
-function AuthForm() {
+const AuthForm = () => {
   return (
     <div className="login">
       <h4>떡꿍</h4>
