@@ -7,6 +7,8 @@ COPY package.json ./
 RUN npm install -g npm@8.19.3
 RUN npm install react-scripts@5.0.1 -g --silent
 #RUN npm install react-dom
+RUN npm install react@latest
+RUN npm install react-dom@latest
 COPY ./ ./
 RUN npm run build
 
