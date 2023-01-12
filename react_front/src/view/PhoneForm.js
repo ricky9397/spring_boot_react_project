@@ -3,23 +3,22 @@ import "../assets/styles/phone.css";
 const phoneForm = () => {
     return (
         <div className="login">
-            <h3>전화번호를 입력하세요.</h3>
             <form>
-                <div className="text_area">
+                <div className="phone_area">
                     <input
                         type="text"
-                        id="userEmail"
-                        name="userEmail"
-                        //defaultValue="userEmail"
+                        id="userPhone"
+                        name="userPhone"
                         placeholder="000-0000-0000"
-                        className="text_input"
+                        className="phone_input"
                     />
                 </div>
+                <h3 className="title_area">전화번호를 입력하세요.</h3>
                 <div className="next_layout">
                     <input
                         type="submit"
                         value="다음"
-                        className="btn"
+                        className="btn_next"
                     />
                 </div>
             </form>

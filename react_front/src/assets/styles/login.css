@@ -1,3 +1,4 @@
+
 body{
     background: linear-gradient(135deg, #1B8AF1, #B58DED);
     height: 100vh;
@@ -15,7 +16,7 @@ h4{
 form{
     display: inline-block;
     align-items: center;
-    height: 270px;
+    height: 150px;
     width: 350px;
     margin-bottom: 170px;
 }
@@ -40,7 +41,6 @@ form{
     outline: none;
 }
 
-
 .btn{
     margin-top: 28px;
     width: 165px;
@@ -59,7 +59,7 @@ form{
     display: inline-block;
     background: #FFFFFF;
     width: 370px;
-    height: 700px;
+    height: 600px;
     margin-top: 10%;
     border-radius: 22px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -72,4 +72,13 @@ form{
     cursor: pointer;
     display: block;
     text-decoration: none;
+}
+
+.login_title{
+    margin-top: 10%;
+    font-size: 35px;
+    font-family: 'Montserrat regular';
+    border: none;
+    text-align: center;
+    color: rgba(151, 131, 250, 1.7);
 }
