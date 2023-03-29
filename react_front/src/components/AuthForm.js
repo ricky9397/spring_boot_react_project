@@ -128,7 +128,7 @@ const AuthForm = () => {
 
   return (
     <div className="login">
-      <h4 className='login_title'>짝꿍</h4>
+      <h4 className='login_title'>짝꿍!</h4>
       <form onSubmit={onSubmit}>
         <div className="text_area">
           <input
