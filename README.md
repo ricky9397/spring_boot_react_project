@@ -32,3 +32,7 @@
 도커볼륨 전부 삭제 : docker volume rm $(docker volume ls -qf dangling=true)
 포트죽이기 : sudo lsof -i :[포트번호]
 sudo kill -9 [PID]
+
+
+서버빌드시 에러 부분
+git ls-remote -h git@github.com:ricky9397/spring_boot_react_project.git HEAD
