@@ -36,3 +36,7 @@ sudo kill -9 [PID]
 
 서버빌드시 에러 부분
 git ls-remote -h git@github.com:ricky9397/spring_boot_react_project.git HEAD
+
+
+https://docs.nativebase.io/building-footer-tabs
+
