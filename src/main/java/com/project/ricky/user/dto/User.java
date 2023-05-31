@@ -42,9 +42,9 @@ public class User{
     @Column(nullable = false)
     private String userPhone;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "userId"))
-    private Set<Authority> authorities;
+    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //@JoinColumn(foreignKey = @ForeignKey(name = "userId"))
+    //private Set<Authority> authorities;
 
     @Column(nullable = true)
     @ColumnDefault(value = "0")
