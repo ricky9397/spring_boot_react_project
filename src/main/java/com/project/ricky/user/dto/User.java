@@ -58,13 +58,16 @@ public class User{
     @ColumnDefault(value = "N")
     private String lockedYn;
 
-    @CreatedDate
+    //@CreatedDate
+    @Column
     private LocalDateTime regDate;
 
-    @LastModifiedDate
+    //@LastModifiedDate
+    @Column
     private LocalDateTime modDate;
 
-    @CreatedDate
+    //@CreatedDate
+    @Column
     private LocalDateTime loginDate;
 
     @ColumnDefault(value = "Y")
@@ -73,10 +76,12 @@ public class User{
     @ColumnDefault(value = "ROLE_USER")
     private String role;
 
+    @Column
     private String refreshToken;
 
     @Column(length = 2000)
     private String providerId;
 
+    @Column
     private String provider;
 }
