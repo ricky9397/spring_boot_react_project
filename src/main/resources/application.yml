@@ -23,7 +23,7 @@ spring:
   datasource:
     #url: jdbc:mysql://10.100.0.104:3306/ricky_schema
     #132.226.22.62
-    url: jdbc:mysql://132.226.22.62:3306/ricky_schema
+    url: jdbc:mysql://132.226.22.62:3306/ricky_schema?serverTimezone=Asia/Seoul
     username: ricky
     password: 1234
 
