@@ -58,16 +58,13 @@ public class User{
     @ColumnDefault(value = "N")
     private String lockedYn;
 
-    //@CreatedDate
-    @Column
+    @CreatedDate
     private LocalDateTime regDate;
 
-    //@LastModifiedDate
-    @Column
+    @LastModifiedDate
     private LocalDateTime modDate;
 
-    //@CreatedDate
-    @Column
+    @CreatedDate
     private LocalDateTime loginDate;
 
     @ColumnDefault(value = "Y")
