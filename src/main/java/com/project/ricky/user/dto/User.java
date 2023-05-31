@@ -47,7 +47,7 @@ public class User{
     //private Set<Authority> authorities;
 
     @Column(nullable = true)
-    //@ColumnDefault(value = "0")
+    @ColumnDefault(value = "0")
     private int loginFailCnt;
 
     @NotBlank
@@ -55,7 +55,7 @@ public class User{
     private String userYn;
 
     @Column(nullable = false, length = 1)
-    //@ColumnDefault(value = "N")
+    @ColumnDefault(value = "'N'")
     private String lockedYn;
 
     @CreatedDate
@@ -67,10 +67,10 @@ public class User{
     @CreatedDate
     private LocalDateTime loginDate;
 
-    @ColumnDefault(value = "Y")
+    @ColumnDefault(value = "'Y'")
     private String useYn;
 
-    @ColumnDefault(value = "ROLE_USER")
+    @ColumnDefault(value = "'ROLE_USER'")
     private String role;
 
     @Column
