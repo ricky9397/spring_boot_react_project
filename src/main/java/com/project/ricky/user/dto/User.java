@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Builder
-@DynamicInsert
-@DynamicUpdate
+//@DynamicInsert
+//@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TBL_USERS")
