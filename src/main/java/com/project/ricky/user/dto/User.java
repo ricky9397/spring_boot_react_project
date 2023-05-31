@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 //@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "TB_USER")
+@Table(name = "TB_USERS")
 public class User{
 
     @Id
