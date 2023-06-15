@@ -128,7 +128,11 @@ const AuthForm = () => {
 
   return (
     <div className="login">
+<<<<<<< HEAD
       <h4 className='login_title'>모 지 ?</h4>
+=======
+      <h4 className='login_title'> 짝 꿍 ! </h4>
+>>>>>>> d0b4077d77c228fd6e0b108ea6ab04b5ee57a8de
       <form onSubmit={onSubmit}>
         <div className="text_area">
           <input

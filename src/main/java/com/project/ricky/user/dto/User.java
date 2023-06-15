@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 //@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "TB_USER")
+@Table(name = "TBL_USERS")
 public class User{
 
     @Id
@@ -42,9 +42,9 @@ public class User{
     @Column(nullable = false)
     private String userPhone;
 
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumn(foreignKey = @ForeignKey(name = "userId"))
-//    private Set<Authority> authorities;
+    //@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //@JoinColumn(foreignKey = @ForeignKey(name = "userId"))
+    //private Set<Authority> authorities;
 
     @Column(nullable = true)
     @ColumnDefault(value = "0")
@@ -55,7 +55,7 @@ public class User{
     private String userYn;
 
     @Column(nullable = false, length = 1)
-    @ColumnDefault(value = "N")
+    @ColumnDefault(value = "'N'")
     private String lockedYn;
 
     @CreatedDate
@@ -67,16 +67,18 @@ public class User{
     @CreatedDate
     private LocalDateTime loginDate;
 
-    @ColumnDefault(value = "Y")
+    @ColumnDefault(value = "'Y'")
     private String useYn;
 
-    @ColumnDefault(value = "ROLE_USER")
+    @ColumnDefault(value = "'ROLE_USER'")
     private String role;
 
+    @Column
     private String refreshToken;
 
     @Column(length = 2000)
     private String providerId;
 
+    @Column
     private String provider;
 }
