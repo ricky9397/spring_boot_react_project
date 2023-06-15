@@ -4,11 +4,13 @@ import { Route, Routes } from 'react-router-dom';
 import Login from './components/AuthForm';
 import Phone from './view/PhoneForm';
 import Jender from './view/JenderForm';
+import Signup from './components/SignupForm';
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/phone" element={<Phone />} />
       <Route path="/jender" element={<Jender />} />
       {/* <Route element={<AuthLayout />}>

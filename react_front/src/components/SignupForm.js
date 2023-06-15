@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import "../assets/styles/login.css";
-import { GoogleLogin } from "react-google-login";
+import "../assets/styles/signup.css";
 // import { useDispatch, useSelector } from 'react-redux';
 // import { changeField, login, googleLogin } from '../modules/auth';
 
-const AuthForm = () => {
+const SignupForm = () => {
   // 이메일 정규식
   const emailRegExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
   // 비밀번호 정규식
@@ -128,7 +127,6 @@ const AuthForm = () => {
 
   return (
     <div className="login">
-      <h4 className='login_title'>모 지 ?</h4>
       <form onSubmit={onSubmit}>
         <div className="text_area">
           <input
@@ -136,7 +134,7 @@ const AuthForm = () => {
             id="userEmail"
             name="userEmail"
             //defaultValue="userEmail"
-            placeholder="Email"
+            placeholder="이메일"
             className="text_input"
             value={userEmail}
             onChange={onEmailHandler}
@@ -148,7 +146,31 @@ const AuthForm = () => {
             id="userPassword"
             name="userPassword"
             //defaultValue="userPassword"
-            placeholder="Password"
+            placeholder="비밀번호"
+            className="text_input"
+            value={userPassword}
+            onChange={onPwHandler}
+          />
+        </div>
+        <div className="text_area">
+          <input
+            type="password"
+            id="userPassword"
+            name="userPassword"
+            //defaultValue="userPassword"
+            placeholder="닉네임"
+            className="text_input"
+            value={userPassword}
+            onChange={onPwHandler}
+          />
+        </div>
+        <div className="text_area">
+          <input
+            type="password"
+            id="userPassword"
+            name="userPassword"
+            //defaultValue="userPassword"
+            placeholder="전화번호"
             className="text_input"
             value={userPassword}
             onChange={onPwHandler}
@@ -156,14 +178,13 @@ const AuthForm = () => {
         </div>
         <input
           type="submit"
-          value="로그인"
+          value="회원가입"
           className="btn"
         />
       </form>
-      {<a className="link" href="/signup">Sign Up</a>}
-        <GoogleLogin />
+      {<a className="link" href="/">로그인</a>}
     </div>
   )
 }
 
-export default AuthForm;
+export default SignupForm;

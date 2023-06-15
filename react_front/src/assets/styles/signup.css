@@ -18,18 +18,20 @@ form{
     height: 150px;
     width: 350px;
     margin-bottom: 170px;
+    margin-top: 30px;
 }
 .text_area{
     align-content: center;
     border-radius: 22px;
-    margin-bottom: 35px;
+    margin-bottom: 15px;
+    margin-top: 25px;
     width: 100%;
     height: 64px;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2), 0 0 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .text_input{
-    margin-top: 1.2rem;
+    margin-top: 1.1rem;
     font-family: 'Montserrat regular';
     font-size: 20px;
     border: none;
@@ -67,8 +69,9 @@ form{
 
 .link{
     color: #0E4579;
+    margin-top: 40px;
     font-family: 'Montserrat light';
-    font-size: 18px;
+    font-size: 25px;
     cursor: pointer;
     display: block;
     text-decoration: none;
