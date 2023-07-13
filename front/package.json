@@ -29,7 +29,7 @@
     "immer": "^9.0.15",
     "postcss": "8.2.8",
     "react": "^18.2.0",
-    //"react-bootstrap": "^2.5.0",
+    "react-bootstrap": "^2.5.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-google-login": "^5.2.2",
