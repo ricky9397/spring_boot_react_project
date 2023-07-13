@@ -11,7 +11,7 @@ RUN yarn add react@latest
 RUN yarn add react-dom@latest
 COPY ./ ./
 #RUN npm run build
-RUN npm run install:clean
+RUN npm run build:tailwind
 
 
 FROM nginx
