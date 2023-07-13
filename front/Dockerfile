@@ -11,7 +11,7 @@ RUN #npm yarn
 RUN yarn add react@latest
 RUN yarn add react-dom@latest
 COPY ./ ./
-RUN yarn build
+RUN npm run build
 
 
 FROM nginx
