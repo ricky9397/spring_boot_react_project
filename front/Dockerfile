@@ -4,8 +4,8 @@ WORKDIR /usr/src/app
 COPY package.json ./
 COPY tailwind.config.js ./
 
-RUN npm install -g npm@8.19.3
-RUN npm install react-scripts@1.1.0 -g --silent
+RUN npm install -g npm@1.1.0
+RUN npm install react-scripts@5.2.0 -g --silent
 
 RUN #npm yarn
 RUN yarn add react@^18.2.0
