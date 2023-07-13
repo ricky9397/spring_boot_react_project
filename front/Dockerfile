@@ -10,8 +10,8 @@ RUN #npm yarn
 RUN yarn add react@latest
 RUN yarn add react-dom@latest
 COPY ./ ./
-#RUN npm run build
 RUN npm run build:tailwind
+RUN npm run build
 
 
 FROM nginx
