@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 COPY package.json ./
 
 RUN npm install -g npm@8.19.3
-RUN npm install react-scripts@5.0.1 -g --silent
+RUN npm install react-scripts@1.1.0 -g --silent
 
 RUN #npm yarn
 RUN yarn add react@latest
