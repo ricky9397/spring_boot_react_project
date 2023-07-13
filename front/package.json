@@ -50,7 +50,7 @@
   },
   "proxy": "http://132.226.22.62",
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=fasle npx react-scripts start",
+    "start": "GENERATE_SOURCEMAP=false npx react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
