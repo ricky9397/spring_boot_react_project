@@ -17,5 +17,5 @@ RUN npm run build:tailwind
 FROM nginx
 EXPOSE 3000
 COPY default.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+COPY --from=builder /usr/src/app/build:tailwind /usr/share/nginx/html
 
