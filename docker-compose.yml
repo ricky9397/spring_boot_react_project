@@ -57,8 +57,8 @@ services:
     image: react
     container_name: react_web
     build:
-      context: ./react_front
-      #context: ./front
+      #context: ./react_front
+      context: ./front
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
@@ -68,8 +68,8 @@ services:
       - was:spring
     volumes:
       - /usr/src/app/node_modules
-      - ./react_front:/usr/src/app
-      #- ./front:/usr/src/app
+      #- ./react_front:/usr/src/app
+      - ./front:/usr/src/app
     depends_on:
       - was
   db:
