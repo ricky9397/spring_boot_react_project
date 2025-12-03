@@ -1,24 +1,12 @@
 pipeline {
     agent any
     
-    tools {
-        jdk 'Java 11'  // Jenkins에서 설정 필요
-    }
-    
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'master',
                     credentialsId: 'github-token',
                     url: 'https://github.com/ricky9397/spring_boot_react_project.git'
-            }
-        }
-        
-        stage('Build Spring Boot JAR') {
-            steps {
-                sh 'echo "Building Spring Boot application..."'
-                sh 'chmod +x ./gradlew'
-                sh 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ./gradlew clean build -x test'
             }
         }
         
