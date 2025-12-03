@@ -24,7 +24,7 @@
 - 포트 (80포트)개방 : sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 - 개방 후 포트리로드 : sudo firewall-cmd --reload
 - 도커 설치 -> 도커 이미지설치 -> 도커콤포즈 -> 젠킨스 2시간주기
-- 젠킨스 hooks 변경
+
 
 
 도커컴포즈 올리기전 빌드 : gradle build --exclude-task test
