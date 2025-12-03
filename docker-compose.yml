@@ -3,7 +3,7 @@ version: '3.4'
 services:
   nginx:
     image: nginx
-    container_name: nginx_web
+    container_name: ricky_nginx
     networks:
       - front-network
       - back-network
@@ -40,7 +40,7 @@ services:
   #########################################################################################################
   was:
     image: spring
-    container_name: spring_was
+    container_name: ricky_api
     build:
       context: .
       dockerfile: Dockerfile
@@ -55,7 +55,7 @@ services:
       - db
   web:
     image: react
-    container_name: react_web
+    container_name: ricky_mfront
     build:
       context: ./react_front
       #context: ./front
@@ -73,8 +73,9 @@ services:
     depends_on:
       - was
   db:
-    image: mysql
+    image: mysql:8.0
     container_name: db_mysql
+    restart: unless-stopped
     networks:
       - back-network
     environment:
