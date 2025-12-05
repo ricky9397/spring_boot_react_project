@@ -1,98 +1,304 @@
-version: '3.4'
+version: '3.8'
 
 services:
   nginx:
-    image: nginx
-    container_name: ricky_nginx
-    networks:
-      - front-network
-      - back-network
+    image: nginx:alpine
+    container_name: nginx-lb
+    restart: always
     ports:
       - "80:80"
-    #      - "443:443"
     volumes:
-     - ./server_proxy:/etc/nginx/conf.d
-      #- ./proxy/nginx.conf:/etc/nginx/nginx.conf
-#      - ./proxy/nginx:/etc/nginx/conf.d
-      ############ 도메인 SSL인증서 발급 후 적용. ###################
-      #- ./proxy/data/nginx.conf:/etc/nginx/nginx.conf
-    #      - ./proxy/data/nginx:/etc/nginx/conf.d
-    #      - ./proxy/data/certbot/conf:/etc/letsencrypt
-    #      - ./proxy/data/certbot/www:/var/www/certbot
-    ############################################################
-    links:
-      - was:spring
-      - web:react
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./frontend/build:/usr/share/nginx/html:ro
+    networks:
+      - frontend-network
+      - backend-network
     depends_on:
-      - was
-      - web
-  ################# 도메인 SSL인증서 발급 후 적용. ##############################################################
-  # 6시간마다 nginx reload
-  #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      - backend-1
+      - backend-2
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
-  #  certbot:
-  #    image: certbot/certbot
-  #    volumes:
-  #      - ./proxy/data/certbot/conf:/etc/letsencrypt
-  #      - ./proxy/data/certbot/www:/var/www/certbot
-  # 12시간마다 재발급
-  #    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  #########################################################################################################
-  was:
-    image: spring
-    container_name: ricky_api
+  backend-1:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
+    image: partner-backend:latest
+    container_name: backend-1
+    restart: always
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+      - INSTANCE_NAME=backend-1
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET}
+      - JAVA_OPTS=-Xms2g -Xmx4g -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    networks:
+      - backend-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 6G
+
+  backend-2:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: partner-backend:latest
+    container_name: backend-2
+    restart: always
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+      - INSTANCE_NAME=backend-2
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET}
+      - JAVA_OPTS=-Xms2g -Xmx4g -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    networks:
+      - backend-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 6G
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+      - TZ=${TZ}
+    command:
+      - postgres
+      - -c
+      - max_connections=200
+      - -c
+      - shared_buffers=1536MB
+      - -c
+      - effective_cache_size=4GB
+      - -c
+      - maintenance_work_mem=384MB
+      - -c
+      - checkpoint_completion_target=0.9
+      - -c
+      - wal_buffers=16MB
+      - -c
+      - default_statistics_target=100
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - effective_io_concurrency=200
+      - -c
+      - work_mem=8MB
+      - -c
+      - min_wal_size=1GB
+      - -c
+      - max_wal_size=4GB
+      - -c
+      - max_worker_processes=4
+      - -c
+      - max_parallel_workers_per_gather=2
+      - -c
+      - max_parallel_workers=4
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+      - ./logs/postgres:/var/log/postgresql
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 6G
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    restart: always
+    command:
+      - redis-server
+      - --appendonly yes
+      - --maxmemory 1536mb
+      - --maxmemory-policy allkeys-lru
+      - --save 900 1
+      - --save 300 10
+      - --save 60 10000
+    volumes:
+      - redis-data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    networks:
+      - backend-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_SERVER_ROOT_URL=http://132.226.22.62/grafana
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "127.0.0.1:3001:3000"
+    networks:
+      - backend-network
+    depends_on:
+      - prometheus
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    restart: always
+    user: root
     ports:
       - "8080:8080"
-    networks:
-      - front-network
-      - back-network
-    links:
-      - db:db_mysql
-    depends_on:
-      - db
-  web:
-    image: react
-    container_name: ricky_mfront
-    build:
-      context: ./react_front
-      #context: ./front
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    networks:
-      - front-network
-    links:
-      - was:spring
+      - "50000:50000"
     volumes:
-      - /usr/src/app/node_modules
-      - ./react_front:/usr/src/app
-      #- ./front:/usr/src/app
-    depends_on:
-      - was
-  db:
-    image: mysql:8.0
-    container_name: db_mysql
-    restart: unless-stopped
-    networks:
-      - back-network
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./:/app/partner
     environment:
-      - MYSQL_DATABASE=ricky_schema
-      - MYSQL_USER=ricky
-      - MYSQL_PASSWORD=1234
-      - MYSQL_ROOT_PASSWORD=password
-    volumes:
-      - /build/DB/mysql:/var/lib/mysql
-    ports:
-      - "3306:3306"
-
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    networks:
+      - backend-network
+    deploy:
+      resources:
+        limits:
+          memory: 2G
 
 networks:
-  front-network:
+  frontend-network:
     driver: bridge
-  back-network:
+  backend-network:
     driver: bridge
-  
 
+volumes:
+  postgres-data:
+  redis-data:
+  prometheus-data:
+  grafana-data:
+  jenkins-data:
